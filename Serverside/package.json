@@ -1,0 +1,22 @@
+{
+  "name": "yourlist_serverside",
+  "version": "1.0.0",
+  "description": "yourlist serverside application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YourListTeam/ServerSide.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YourListTeam/ServerSide/issues"
+  },
+  "homepage": "https://github.com/YourListTeam/ServerSide#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
