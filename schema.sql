@@ -1,46 +1,49 @@
-CREATE TABLE Auth (
-    User char(36) CHECK (
-    User in (SELECT UUID FROM Users)),
-    LID char(36),
-    Permissions binary[4],
-    FOREIGN KEY (LID),
-    REFERENCES Lists (LID),
-    ON UPDATE CASCADE,
-    ON DELETE CASCADE CHECK (Permissions>=8)
-);
 CREATE TABLE Users (
-    UUID char(36) PRIMARY KEY,
-    username varchar(10)
-    Name varchar(20)
+    UUID varchar(36) PRIMARY KEY,
+    username varchar(10),
+    Name varchar(20),
     Email varchar(50),
-    Picture varbinary(50)
+    Picture BYTEA
 );
 CREATE TABLE Lists (
-    LID char(36),
-    Name varchar(10),
-    Colour char(11),
-    Modified date
-    OID char (36),
-    FOREIGN KEY (OID),
-    REFERENCES Item (OID)
-);
-CREATE TABLE Item (
-    OID char(36),
-    Name varchar(10),
-    Completed binary,
+    LID varchar(36) PRIMARY KEY,
+    listname varchar(10),
+    Colour varchar(11),
     Modified date
 );
+CREATE TABLE Auth (
+    UUID varchar(36),
+    LID varchar(36),
+    Permission BYTEA,
+    PRIMARY KEY (UUID, LID),
+    FOREIGN KEY (UUID) REFERENCES Users(UUID) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (LID) REFERENCES Lists(LID)  ON DELETE CASCADE
+);
+
+CREATE TABLE Items (
+    IID varchar(36) PRIMARY KEY,
+    LID varchar(36),
+    Name varchar(10),
+    Completed boolean,
+    Modified date,
+    FOREIGN KEY (LID) REFERENCES Lists(LID)
+);
+
 CREATE TABLE Favorites (
-    UUID char(36),
-    LID char(36)
+    UUID varchar(36),
+    LID varchar(36),
+    FOREIGN KEY (UUID) REFERENCES Users(UUID),
+    FOREIGN KEY (LID) REFERENCES Lists(LID)
 );
 CREATE TABLE Contacts (
-    User_UUID char(36),
-    Contact_UUID char(36)
+    User_UUID varchar(36),
+    Contact_UUID varchar(36),
+    FOREIGN KEY (User_UUID) REFERENCES Users(UUID),
+    FOREIGN KEY (Contact_UUID) REFERENCES Users(UUID)
 );
+
 CREATE TABLE Locations(
-    LID char(36),
+    LID varchar(36),
     Address point,
-    FOREIGN KEY (LID),
-    REFERENCES Lists (LID)
+    FOREIGN KEY (LID) REFERENCES Lists(LID)
 );
