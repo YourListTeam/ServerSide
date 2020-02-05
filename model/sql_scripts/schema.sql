@@ -1,8 +1,8 @@
 CREATE TABLE Users (
     UUID varchar(36) PRIMARY KEY,
-    username varchar(10),
-    Name varchar(20),
-    Email varchar(50),
+    username varchar(64),
+    Name varchar(32),
+    Email varchar(64),
     Picture BYTEA
 );
 CREATE TABLE Lists (
