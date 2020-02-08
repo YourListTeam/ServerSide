@@ -6,10 +6,10 @@ Repository for the serverside of the project
 3. psql -f model/sql_scripts/schema.sql
 4. load dummy data from model/sql_scripts/Users.sql
 4. set up the environment variables
-    export PGUSER='';
-    export PGHOST='';
+    export PGUSER='csc492_yourlist';
+    export PGHOST='mcsdb.utm.utoronto.ca';
     export PGPASSWORD='';
-    export PGDATABASE='';
-    export PGPORT=;
-    export PORT=;
+    export PGDATABASE='csc492_yourlist';
+    export PGPORT=5432;
+    export PORT=30000;
 5. node app.js
