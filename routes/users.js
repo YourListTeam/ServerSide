@@ -4,9 +4,14 @@ var dbclient = require('../model/database.js');
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
     if ("UUID" in req.body) {
-      dbclient.get_user(res, req.body["UUID"])
+      let ret = await dbclient.get_user(req.body["UUID"]);
+      if (ret.rows) {
+        res.status(200).json(ret.rows[0]);
+      } else {
+        res.status(404);
+      }
     } else {
       res.status(400);
     }
