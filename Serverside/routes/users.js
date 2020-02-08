@@ -5,8 +5,11 @@ var dbclient = require('../model/database.js');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.json({"userid":"1234",'username':"krishc"});
-  dbclient.fcn();
+    if ("UUID" in req.body) {
+      dbclient.get_user(res, req.body["UUID"])
+    } else {
+      res.status(400);
+    }
 });
 
 module.exports = router;

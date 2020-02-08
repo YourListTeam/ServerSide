@@ -2,13 +2,20 @@ const {Pool} = require('pg');
 
 const pool = new Pool();
 
-function query() {
-	pool.query("SELECT * FROM Users WHERE username='scashin0';", (error, results) => {
-    	if (error) {
-       	 	throw error;
-    	}
-    		console.log(results.rows);
+function get_user_by_uuid(response, uuid) {
+	pool.query("SELECT * FROM Users WHERE UUID=$1;",[uuid]).then(ret => {
+		if (ret.rows) {
+			response.status(200).json(ret.rows[0]);
+		} else {
+			response.status(404);
+		}
+	}).catch(e => {
+		console.error(e.stack);
+        res.status(500);
 	});
 }
 
-module.exports.fcn = query;
+module.exports = {
+	db_pool: pool,
+	get_user: get_user_by_uuid
+}
