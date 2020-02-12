@@ -6,6 +6,10 @@ function get_user_by_uuid(uuid) {
 	return pool.query("SELECT * FROM Users WHERE UUID=$1;",[uuid]);
 }
 
+function does_user_exist(uuid){
+	return pool.query("SELECT * FROM Users WHERE UUID=$1;",[uuid]) == true;
+}
+
 function set_name(name, uuid){
 	pool.query("UPDATE users SET name=$1 WHERE UUID=$2;", [name, uuid]);
 }
@@ -24,5 +28,6 @@ module.exports = {
 	get_user: get_user_by_uuid,
 	set_name: set_name,
 	set_home: set_home,
-	set_email: set_email
+	set_email: set_email,
+	does_user_exist: does_user_exist
 }
