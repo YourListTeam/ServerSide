@@ -5,7 +5,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-// view engine setup
+PORT = process.env.PORT || 3000
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -13,4 +14,4 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.listen(process.env.PORT, () => console.log("App listening on port "+process.env.PORT));
+app.listen(PORT, () => console.log("App listening on port "+PORT));
