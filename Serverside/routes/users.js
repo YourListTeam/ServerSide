@@ -20,17 +20,20 @@ router.get('/', async function(req, res, next) {
 
 router.post('/', function(req, res, next){
   if("UUID" in req.body){
-    if("name" in req.body){
-      dbclient.set_name(req.body["name"], req.body["UUID"])
+    if(dbclient.does_user_exist(req.body["UUID"])){
+      if("name" in req.body){
+        dbclient.set_name(req.body["name"], req.body["UUID"])
+      }
+      if("email" in req.body && validator.isEmail(req.body["email"])){
+        dbclient.set_email(req.body["email"], req.body["UUID"])
+      }
+      if("home" in req.body){
+        dbclient.set_home(req.body["home"], req.body["UUID"])
+      }
+      res.status(200)
+    } else{
+      res.status(400);
     }
-    if("email" in req.body && validator.isEmail(req.body["email"])){
-      dbclient.set_email(req.body["email"], req.body["UUID"])
-    }
-    if("home" in req.body){
-      dbclient.set_home(req.body["home"], req.body["UUID"])
-    }
-    res.status(200)
-
   } else {
     res.status(400)
   }
