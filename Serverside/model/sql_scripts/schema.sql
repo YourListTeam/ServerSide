@@ -2,6 +2,7 @@ CREATE TABLE Users (
     UUID varchar(36) PRIMARY KEY,
     username varchar(64),
     Name varchar(32),
+    HomeLocation varchar(64),
     Email varchar(64),
     Picture BYTEA
 );
