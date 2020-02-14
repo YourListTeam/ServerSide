@@ -10,10 +10,10 @@ router.get('/', async function(req, res, next) {
       if (ret.rows) {
         res.status(200).json(ret.rows[0]);
       } else {
-        res.status(404);
+        res.status(404).end();
       }
     } else {
-      res.status(400);
+      res.status(400).end();
     }
 });
 
