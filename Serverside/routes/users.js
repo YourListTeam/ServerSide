@@ -18,21 +18,23 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.post('/', function(req, res, next){
+router.patch('/', async function(req, res, next){
   if("UUID" in req.body){
-    if(dbclient.does_user_exist(req.body["UUID"])){
+    let ret = await dbclient.get_user(req.body["UUID"])
+    if(ret.rows){
+      let user = ret.rows[0]
       if("name" in req.body){
-        dbclient.set_name(req.body["name"], req.body["UUID"])
+        user.name = req.body["name"]
       }
-      if("email" in req.body && validator.isEmail(req.body["email"])){
-        dbclient.set_email(req.body["email"], req.body["UUID"])
+      if("email" in req.body){
+        user.email = req.body["email"]
       }
       if("home" in req.body){
-        dbclient.set_home(req.body["home"], req.body["UUID"])
+        user.homelocation = req.body["home"]
       }
-      res.status(200)
-    } else{
-      res.status(400);
+      dbclient.set_user(req.body["UUID"], user)
+    }else{
+      res.status(404)
     }
   } else {
     res.status(400)

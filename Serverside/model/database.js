@@ -7,6 +7,11 @@ function get_user_by_uuid(uuid) {
 	return pool.query("SELECT * FROM Users WHERE UUID=$1;",[uuid]);
 }
 
+function set_user(uuid, user){
+	pool.query("UPDATE users SET name=$1, email=$2, homelocation=$3 WHERE UUID=$4;", [user.name, user.email, user.homelocation, uuid]);
+}
+
+
 function get_item(iid) {
     return pool.query("SELECT * FROM Items WHERE IID=$1;",[iid]);
 }
@@ -77,13 +82,13 @@ function add_permission(response, uuid, lid) {
 
 module.exports = {
 	db_pool: pool,
-    get_user: get_user_by_uuid,
+	get_user: get_user_by_uuid,
+	set_user: set_user,
     get_item: get_item,
     get_items: get_items,
     authenticate_list: authenticate,
     can_read: check_read,
 	get_list: get_list_by_lid,
 	create_new_list: create_list,
-	get_auth: get_auth_by_id,
 	create_auth: add_permission
 }
