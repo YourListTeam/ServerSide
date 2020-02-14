@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
     }
 });
 
-/* POST listing. */
+/* POST created list. */
 router.post('/', function(req, res, next) {
   if ("LID" in req.body) {
     dbclient.create_new_list(res,req.body["UUID"], req.body["LID"],req.body["listname"],req.body["Colour"])
