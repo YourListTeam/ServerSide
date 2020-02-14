@@ -4,12 +4,14 @@ let morgan = require('morgan')
 let indexRouter = require('./routes/index');
 let itemsRouter = require('./routes/items');
 let usersRouter = require('./routes/users');
+let listsRouter = require('./routes/lists')
 
 var authRouter = require('./routes/auth');
 
 var app = express();
 
-// view engine setup
+PORT = process.env.PORT || 3000
+
 
 app.use(express.json());
 app.use(helmet());
@@ -23,4 +25,4 @@ app.use('/lists', listsRouter);
 app.use('/auth', authRouter);
 
 
-app.listen(process.env.PORT, () => console.log("App listening on port "+process.env.PORT));
+app.listen(PORT, () => console.log("App listening on port "+PORT));
