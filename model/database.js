@@ -14,11 +14,26 @@ function get_items(lid) {
     return pool.query("SELECT * FROM Items WHERE LID=$1;",[lid]);
 }
 
-function authenticate(lid, uuid) {
-    pool.query("SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then((result) => {
-        console.log(result);
-    });
+async function authenticate(lid, uuid) {
+    return pool.query("SELECT Permission FROM Auth2 WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
 }
+
+function check_read(permission_array) {
+    return ((permission_array.length > 0) && permission_array[0]['permission'][1] == '1');
+}
+
+function check_write(permission_array) {
+    return ((permission_array.length > 0) && permission_array[0]['permission'][2] == '1');
+}
+
+function check_modify(permission_array) {
+    return ((permission_array.length > 0) && permission_array[0]['permission'][3] == '1');
+}
+
+function check_admin(permission_array) {
+    return ((permission_array.length > 0) && permission_array[0]['permission'][0] == '1');
+}
+
 
 module.exports = {
 	db_pool: pool,
@@ -26,4 +41,5 @@ module.exports = {
     get_item: get_item,
     get_items: get_items,
     authenticate_list: authenticate,
+    can_read: check_read
 }
