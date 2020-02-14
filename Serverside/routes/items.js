@@ -23,16 +23,19 @@ router.get('/', async function(req, res, next) {
 
 /* PUT a single item. */
 router.put('/', async function(req, res, next) {
-    if ("LID" in req.body && "UUID" in req.body) {
-        //let ret = await dbclient.get_item(req.body["IID"]);
-        permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
-        if (dbclient.can_write(permission)) {
-            let IID
+    try {
+        if ("LID" in req.body && "UUID" in req.body && 'Name' in req.body) {
+            permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
+            if (dbclient.can_write(permission)) {
+                result = await dbclient.add_item(req.body);
+            } else {
+                res.status(401).end();
+            }
         } else {
-            res.status(401).end();
+            res.status(400).end();
         }
-    } else {
-        res.status(400).end();
+    } catch (err) {
+        res.status(500).end();
     }
 });
 
