@@ -33,6 +33,7 @@ router.patch('/', async function(req, res, next){
         user.homelocation = req.body["home"]
       }
       dbclient.set_user(req.body["UUID"], user)
+      res.status(200)
     }else{
       res.status(404)
     }
