@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
     }
   });
 
-/* POST created auth. */
+/* POST auth for a given list and user. */
 router.post('/', function(req, res, next) {
   if (("UUID" in req.body) && ("LID" in req.body)) {
     dbclient.create_auth(res,req.body["UUID"], req.body["LID"])
@@ -21,4 +21,4 @@ router.post('/', function(req, res, next) {
   }
 });
 
-  module.exports = router;
+module.exports = router;
