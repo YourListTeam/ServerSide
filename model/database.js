@@ -52,7 +52,6 @@ function create_list(response, uuid, lid, lname, rbg) {
 		console.error(e.stack);
         response.status(500);
 	});
-	add_permission(response,uuid,lid);
 }
 
 function add_permission(response, uuid, lid) {
