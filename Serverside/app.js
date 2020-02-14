@@ -2,6 +2,7 @@ let express = require('express');
 let helmet = require('helmet')
 let morgan = require('morgan')
 let indexRouter = require('./routes/index');
+let itemsRouter = require('./routes/items');
 let usersRouter = require('./routes/users');
 
 var app = express();
@@ -15,5 +16,6 @@ app.use(morgan('combined'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/items', itemsRouter);
 
 app.listen(process.env.PORT, () => console.log("App listening on port "+process.env.PORT));

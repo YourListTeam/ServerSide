@@ -5,4 +5,4 @@ if [ $? == 0 ]; then
     kill $proc;
 fi
 ssh -f -N -L 5433:mcsdb.utm.utoronto.ca:5432 $UTORID@cslinux.utm.utoronto.ca;
-node app.js;
+npx nodemon app.js;
