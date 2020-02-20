@@ -9,7 +9,7 @@ var authRouter = require('./routes/auth');
 
 var app = express();
 
-PORT = process.env.PORT || 3000
+PORT = process.env.PORT
 
 
 app.use(express.json());
