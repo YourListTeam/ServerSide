@@ -4,8 +4,7 @@ let morgan = require('morgan')
 let indexRouter = require('./routes/index');
 let itemsRouter = require('./routes/items');
 let usersRouter = require('./routes/users');
-let listsRouter = require('./routes/lists')
-
+let listsRouter = require('./routes/lists');
 var authRouter = require('./routes/auth');
 
 var app = express();

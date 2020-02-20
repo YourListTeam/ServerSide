@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
       dbclient.get_list(res, req.body["LID"])
     }
     else {
-      res.status(400);
+      res.status(400).end();
     }
 });
 
@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
   if ("LID" in req.body) {
     dbclient.create_new_list(res,req.body["UUID"], req.body["LID"],req.body["listname"],req.body["Colour"])
   } else {
-    res.status(400);
+    res.status(400).end();
   }
 });
 

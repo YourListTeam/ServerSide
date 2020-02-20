@@ -23,6 +23,7 @@ CREATE TABLE Auth (
 
 CREATE TABLE Items (
     IID varchar(36) PRIMARY KEY,
+    UUID varchar(36),
     LID varchar(36),
     Name varchar(10),
     Completed boolean,

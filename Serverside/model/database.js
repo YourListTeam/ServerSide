@@ -1,5 +1,5 @@
 const {Pool} = require('pg');
-
+const uuidv1 = require('uuid/v1');
 const pool = new Pool();
 
 
@@ -67,18 +67,22 @@ function create_list(response, uuid, lid, lname, rbg) {
 	});
 }
 
-function add_permission(response, uuid, lid) {
+function add_permission(uuid, lid) {
 	// insert the new list's user's permissions into Auth
 	// as this only occurs when the user is creating a list, they are the admin
 	// so they have full permissions
-	pool.query("INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, E'\\F')",[uuid,lid]).then(ret => {
-	response.status(200).json();
-	}).catch(e => {
-		console.error(e.stack);
-		response.status(500);
-	});
+	return pool.query("INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, B'1111') RETURNING *",[uuid,lid]);
 }
 
+function add_item(body) {
+	// insert the new list's user's permissions into Auth
+	// as this only occurs when the user is creating a list, they are the admin
+    // so they have full permissions
+    body['Modified'] = new Date();
+    body['Completed'] = false;
+    let parameters = [uuidv1(), body['UUID'], body['LID'], body['Name'], body['Completed'], body['Modified']];
+	return pool.query("INSERT INTO Items (IID, UUID, LID, Name, Completed, Modified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",parameters);
+}
 
 module.exports = {
 	db_pool: pool,
@@ -88,7 +92,8 @@ module.exports = {
     get_items: get_items,
     authenticate_list: authenticate,
     can_read: check_read,
-	get_list: get_list_by_lid,
-	create_new_list: create_list,
-	create_auth: add_permission
+    get_list: get_list_by_lid,
+    create_new_list: create_list,
+    create_admin: add_permission,
+    add_item: add_item
 }
