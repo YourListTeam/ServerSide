@@ -21,7 +21,7 @@ function get_items(lid) {
 }
 
 async function authenticate(lid, uuid) {
-    return pool.query("SELECT Permission FROM Auth2 WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
+    return pool.query("SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
 }
 
 function check_read(permission_array) {
@@ -67,11 +67,11 @@ function create_list(response, uuid, lid, lname, rbg) {
 	});
 }
 
-function add_permission(uuid, lid) {
+function add_permission(uuid, lid,permission) {
 	// insert the new list's user's permissions into Auth
 	// as this only occurs when the user is creating a list, they are the admin
 	// so they have full permissions
-	return pool.query("INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, B'1111') RETURNING *",[uuid,lid]);
+	return pool.query("INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, CAST($3 AS BIT(4))) RETURNING *",[uuid,lid,permission]);
 }
 
 function add_item(body) {
@@ -94,6 +94,6 @@ module.exports = {
     can_read: check_read,
     get_list: get_list_by_lid,
     create_new_list: create_list,
-    create_admin: add_permission,
-    add_item: add_item
+	create_admin: add_permission,
+	add_item: add_item
 }
