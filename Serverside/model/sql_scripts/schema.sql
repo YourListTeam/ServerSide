@@ -2,6 +2,7 @@ CREATE TABLE Users (
     UUID varchar(36) PRIMARY KEY,
     username varchar(64),
     Name varchar(32),
+    HomeLocation varchar(64),
     Email varchar(64),
     Picture BYTEA
 );
@@ -14,7 +15,7 @@ CREATE TABLE Lists (
 CREATE TABLE Auth (
     UUID varchar(36),
     LID varchar(36),
-    Permission BYTEA,
+    Permission bit(4),
     PRIMARY KEY (UUID, LID),
     FOREIGN KEY (UUID) REFERENCES Users(UUID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (LID) REFERENCES Lists(LID)  ON DELETE CASCADE
@@ -22,6 +23,7 @@ CREATE TABLE Auth (
 
 CREATE TABLE Items (
     IID varchar(36) PRIMARY KEY,
+    UUID varchar(36),
     LID varchar(36),
     Name varchar(10),
     Completed boolean,
