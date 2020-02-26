@@ -84,6 +84,11 @@ function add_item(body) {
 	return pool.query("INSERT INTO Items (IID, UUID, LID, Name, Completed, Modified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",parameters);
 }
 
+function delete_user(uuid,lid) {
+	// contact must be previously added to the list
+	return pool.query("IF EXISTS(SELECT * FROM Auth WHERE UUID = $1 AND LID = $2) THEN DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *",[uuid,lid]);
+}
+
 module.exports = {
 	db_pool: pool,
 	get_user: get_user_by_uuid,
@@ -91,9 +96,13 @@ module.exports = {
     get_item: get_item,
     get_items: get_items,
     authenticate_list: authenticate,
-    can_read: check_read,
+	can_read: check_read,
+	can_write: check_write,
+	can_modify: check_modify,
+	is_admin: check_admin,
     get_list: get_list_by_lid,
     create_new_list: create_list,
     create_admin: add_permission,
-    add_item: add_item
+	add_item: add_item,
+	delete_contact: delete_user
 }
