@@ -33,30 +33,28 @@ router.post('/admin', async function(req, res, next) {
 
 /* DELETE another user for a given list. */
 router.delete('/user', async function(req, res, next) {
-    try {
-        if ("LID" in req.body && "UUID" in req.body && 'OUUID' in req.body) {
-            // user needs to have admin or modify permissions
-            user_permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
-            contact_permission = await dbclient.authenticate_list(req.body['LID'],req.body['OUUID']);
-            
-            if (dbclient.is_admin(user_permission)) {
-                result = await dbclient.delete_contact(req.body['LID'],req.body['OUUID']);
-            }
-            else if (dbclient.can_modify(user_permission)) {
-                // if contact is an admin, the user cannot delete them
-                if (dbclient.is_admin(contact_permission)) {
-                    res.status(401).end();
-                } else{
-                    result = await dbclient.delete_contact(req.body['LID'],req.body['OUUID']);
-                }
-            } else {
+    if ("LID" in req.body && "UUID" in req.body && 'OUUID' in req.body) {
+        // user needs to have admin or modify permissions
+        user_permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
+        contact_permission = await dbclient.authenticate_list(req.body['LID'],req.body['OUUID']);
+        
+        if (dbclient.is_admin(user_permission)) {
+            result = await dbclient.delete_contact(req.body['OUUID'],req.body['LID']);
+            res.status(200).end();
+        }
+        else if (dbclient.can_modify(user_permission)) {
+            // if contact is an admin, the user cannot delete them
+            if (dbclient.is_admin(contact_permission)) {
                 res.status(401).end();
+            } else{
+                result = await dbclient.delete_contact(req.body['OUUID'],req.body['LID']);
+                res.status(200).end();
             }
         } else {
-            res.status(400).end();
+            res.status(401).end();
         }
-    } catch (err) {
-        res.status(500).end();
+    } else {
+        res.status(400).end();
     }
 });
 

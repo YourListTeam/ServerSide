@@ -21,7 +21,7 @@ function get_items(lid) {
 }
 
 async function authenticate(lid, uuid) {
-    return pool.query("SELECT Permission FROM Auth2 WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
+    return pool.query("SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
 }
 
 function check_read(permission_array) {
@@ -86,7 +86,7 @@ function add_item(body) {
 
 function delete_user(uuid,lid) {
 	// contact must be previously added to the list
-	return pool.query("IF EXISTS(SELECT * FROM Auth WHERE UUID = $1 AND LID = $2) THEN DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *",[uuid,lid]);
+	return pool.query("DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;",[uuid,lid]);
 }
 
 module.exports = {
