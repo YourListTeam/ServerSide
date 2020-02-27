@@ -91,9 +91,12 @@ module.exports = {
     get_item: get_item,
     get_items: get_items,
     authenticate_list: authenticate,
-    can_read: check_read,
+	can_read: check_read,
+	can_write: check_write,
+	can_modify: check_modify,
+	is_admin: check_admin,
     get_list: get_list_by_lid,
     create_new_list: create_list,
-	create_admin: add_permission,
+	add_user: add_permission,
 	add_item: add_item
 }
