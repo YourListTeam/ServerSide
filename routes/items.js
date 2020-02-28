@@ -39,6 +39,20 @@ router.put('/', async function(req, res, next) {
     }
 });
 
+router.get('/check_completed', async function(req, res, next){
+    if("LID" in req.body){
+      let ret = await dbclient.check_completed(req.body["LID"])
+      if(ret.rows){
+        res.json(ret.rows[0])
+      }else{
+        res.status(404)
+      }
+    }else{
+      res.status(400)
+    }
+    
+})
+
 /* GET all items from a list. 
 router.get('/items', async function(req, res, next) {
     if ("LID" in req.body) {
