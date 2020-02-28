@@ -20,6 +20,10 @@ function get_items(lid) {
     return pool.query("SELECT * FROM Items WHERE LID=$1;",[lid]);
 }
 
+async function readable_lists(uuid){
+	return pool.query("SELECT LID FROM Auth Where UUID=$1 and Permission&b'0100'='0100'", [uuid])
+}
+
 async function authenticate(lid, uuid) {
     return pool.query("SELECT Permission FROM Auth2 WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
 }
@@ -102,6 +106,7 @@ module.exports = {
 	can_read: check_read,
 	check_completed: check_completed,
 	set_completed: set_completed,
+	readable_lists: readable_lists,
     get_list: get_list_by_lid,
     create_new_list: create_list,
     create_admin: add_permission,
