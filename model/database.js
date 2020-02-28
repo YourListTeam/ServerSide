@@ -84,6 +84,10 @@ function add_item(body) {
 	return pool.query("INSERT INTO Items (IID, UUID, LID, Name, Completed, Modified) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",parameters);
 }
 
+function set_completed(iid, Completed) {
+	return pool.query("UPDATE Items Set Completed=$2 WHERE IID=$1", [iid, Completed])
+}
+
 function check_completed(iid){
 	return pool.query("SELECT Completed FROM Items Where Iid=$1", [iid])
 }
@@ -97,6 +101,7 @@ module.exports = {
     authenticate_list: authenticate,
 	can_read: check_read,
 	check_completed: check_completed,
+	set_completed: set_completed,
     get_list: get_list_by_lid,
     create_new_list: create_list,
     create_admin: add_permission,
