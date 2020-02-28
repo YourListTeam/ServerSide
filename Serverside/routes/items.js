@@ -37,11 +37,28 @@ router.put('/', async function(req, res, next) {
     } catch (err) {
         res.status(500).end();
     }
-});
+  });
 
-router.get('/check_completed', async function(req, res, next){
-    if("LID" in req.body){
-      let ret = await dbclient.check_completed(req.body["LID"])
+  router.patch("/", async function(req, res, next){
+    try {
+      if ("LID" in req.body && "UUID" in req.body) {
+          permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
+          if (dbclient.can_write(permission)) {
+              result = await dbclient.update_item(req.body);
+          } else {
+              res.status(401).end();
+          }
+      } else {
+          res.status(400).end();
+      }
+  } catch (err) {
+      res.status(500).end();
+  }
+  })
+
+router.get('/completed', async function(req, res, next){
+    if("IID" in req.body){    
+      let ret = await dbclient.get_completed(req.body["IID"])
       if(ret.rows){
         res.json(ret.rows[0])
       }else{
@@ -51,6 +68,23 @@ router.get('/check_completed', async function(req, res, next){
       res.status(400)
     }
     
+})
+
+router.post('/completed', async function(req, res, next){ 
+  try {
+    if ("LID" in req.body && "UUID" in req.body && 'Completed' in req.body) {
+        permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
+        if (dbclient.can_write(permission)) {
+            result = await dbclient.set_completed(req.body["Completed"])
+        } else {
+            res.status(401).end();
+        }
+    } else {
+        res.status(400).end();
+    }
+} catch (err) {
+    res.status(500).end();
+}
 })
 
 /* GET all items from a list. 
