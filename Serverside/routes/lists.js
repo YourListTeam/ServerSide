@@ -21,4 +21,18 @@ router.post('/', function(req, res, next) {
   }
 });
 
+router.get('/readable_lists', async function(req, res, next){
+  if("UUID" in req.body){
+    let perms = await dbclient.readable_lists(req.body["UUID"])
+    r = []
+    for(var i=0;i<perms.rows.length;i++){
+      r.push(perms.rows[i]["lid"])
+    }
+    res.json(r)
+    res.status(200)
+  }else{
+    res.status(400);
+  }
+});
+
 module.exports = router;
