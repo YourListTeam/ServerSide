@@ -34,22 +34,20 @@ router.post('/user', async function(req, res, next) {
         // only a user with admin permissions can add another user as admin
         user_permission = await dbclient.authenticate_list(req.body["LID"],req.body["UUID"]);
         if (dbclient.is_admin(user_permission)){
-            if (parseInt(req.body["Permission"],2)<=15){
-                result = await dbclient.add_user(req.body["OUUID"], req.body["LID"], req.body["Permission"]);
-                res.status(200).end();
+            // string must consist of only 1s and 0s
+            if (req.body["Permission"].match(/^[10]+$/)){
+                console.log(parseInt(req.body["Permission"],2));
+                if (0<parseInt(req.body["Permission"],2) && parseInt(req.body["Permission"],2)<=15){
+                    result = await dbclient.add_user(req.body["OUUID"], req.body["LID"], req.body["Permission"]);
+                    res.status(200).end();
+                } else {
+                    res.status(400).end();
+                }
             } else {
                 res.status(400).end();
             }
-        }
-        else if (dbclient.can_modify(user_permission)){
-            if (parseInt(req.body["Permission"],2)<=7){
-                result = await dbclient.add_user(req.body["OUUID"], req.body["LID"], req.body["Permission"]);
-                res.status(200).end();
-            } else {
-                res.status(400).end();
-            }
-        }
-        else {
+            
+        } else {
             res.status(400).end();
         }
         
