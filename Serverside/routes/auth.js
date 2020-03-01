@@ -38,8 +38,13 @@ router.delete('/user', async function(req, res, next) {
         user_permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
         
         if (dbclient.is_admin(user_permission)) {
-            result = await dbclient.delete_contact(req.body['OUUID'],req.body['LID']);
-            res.status(200).end();
+            contact_permission = await dbclient.user_in_list(req.body['OUUID'],req.body['LID']);
+            if (contact_permission.rows[0]){
+                result = await dbclient.delete_contact(req.body['OUUID'],req.body['LID']);
+                res.status(200).end();
+            } else {
+                res.status(400).end();
+            }
         } else {
             res.status(401).end();
         }
