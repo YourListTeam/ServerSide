@@ -103,7 +103,7 @@ module.exports = {
 	can_read: check_read,
 	authenticate_list: authenticate,
 	readable_lists: readable_lists,
-  can_write: check_write,
+    can_write: check_write,
 	can_modify: check_modify,
 	is_admin: check_admin,
     get_list: get_list_by_lid,
