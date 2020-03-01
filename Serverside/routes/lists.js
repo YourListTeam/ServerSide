@@ -1,8 +1,7 @@
 const express = require('express');
-
-const router = express.Router();
 const dbclient = require('../model/database.js');
 
+const router = express.Router();
 /* GET list listing. */
 router.get('/', (req, res) => {
     if ('LID' in req.body) {

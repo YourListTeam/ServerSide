@@ -4,43 +4,61 @@ const router = express.Router();
 // const validator = require('validator');
 const dbclient = require('../model/database.js');
 
-/* GET users listing. */
-router.get('/', async (req, res) => {
-    if ('UUID' in req.body) {
-        const ret = await dbclient.get_user(req.body.UUID);
+async function getHandler(body) {
+    const output = {};
+    if ('UUID' in body) {
+        const ret = await dbclient.get_user(body.UUID);
         if (ret.rows) {
-            res.status(200).json(ret.rows[0]);
+            output.status = 200;
+            [output.json] = [ret.rows[0]];
         } else {
-            res.status(404).end();
+            output.status = 400;
         }
     } else {
-        res.status(400).end();
+        output.status = 400;
+    }
+    return output;
+}
+
+async function patchHandler(body) {
+    const output = {};
+    if ('UUID' in body) {
+        const ret = await dbclient.get_user(body.UUID);
+        if (ret.rows) {
+            const user = ret.rows[0];
+            if ('name' in body) {
+                user.Name = body.name;
+            }
+            if ('email' in body) {
+                user.Email = body.email;
+            }
+            if ('home' in body) {
+                user.HomeLocation = body.home;
+            }
+            await dbclient.set_user(body.UUID, user);
+            output.status = 200;
+        } else {
+            output.status = 404;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+/* GET users listing. */
+router.get('/', async (req, res) => {
+    const output = await getHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
 
 router.patch('/', async (req, res) => {
-    if ('UUID' in req.body) {
-        const ret = await dbclient.get_user(req.body.UUID);
-        if (ret.rows) {
-            const user = ret.rows[0];
-            if ('name' in req.body) {
-                user.name = req.body.name;
-            }
-            if ('email' in req.body) {
-                user.email = req.body.email;
-            }
-            if ('home' in req.body) {
-                user.homelocation = req.body.home;
-            }
-            dbclient.set_user(req.body.UUID, user);
-            res.status(200);
-        } else {
-            res.status(404);
-        }
-    } else {
-        res.status(400);
-    }
-    res.end();
+    const output = await patchHandler(req.body);
+    res.status(output.status).end();
 });
 
 

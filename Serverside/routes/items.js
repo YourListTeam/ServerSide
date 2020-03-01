@@ -1,8 +1,7 @@
 const express = require('express');
-
-const router = express.Router();
 const dbclient = require('../model/database.js');
 
+const router = express.Router();
 /* GET a single item. */
 router.get('/', async (req, res) => {
     if ('IID' in req.body && 'UUID' in req.body) {

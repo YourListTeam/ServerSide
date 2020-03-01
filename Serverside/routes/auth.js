@@ -1,57 +1,76 @@
 const express = require('express');
-
-const router = express.Router();
 const dbclient = require('../model/database.js');
 
+const router = express.Router();
 /* GET auth listing. */
-router.get('/', async (req, res) => {
-    if (('UUID' in req.body) && ('LID' in req.body)) {
-        const result = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
+async function getHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body)) {
+        const result = await dbclient.authenticate_list(body.LID, body.UUID);
         if (result) {
-            res.json(result[0]);
+            output.status = 200;
+            [output.json] = [result[0]];
         } else {
-            res.status(404).end();
+            output.status = 404;
         }
     } else {
-        res.status(400).end();
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/', async (req, res) => {
+    const output = await getHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
 
 /* POST auth for a given list and user. */
-router.post('/admin', async (req, res) => {
-    if (('UUID' in req.body) && ('LID' in req.body)) {
-        await dbclient.add_user(req.body.UUID, req.body.LID, 1111);
-        res.status(200).end();
+async function postAdminHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body)) {
+        await dbclient.add_user(body.UUID, body.LID, 1111);
+        output.status = 200;
     } else {
-        res.status(400).end();
+        output.status = 400;
     }
+    return output;
+}
+
+router.post('/admin', async (req, res) => {
+    const output = await postAdminHandler(req.body);
+    res.status(output.status).end();
 });
 
 /* POST user for a given list and user. */
-router.post('/user', async (req, res) => {
-    if (('UUID' in req.body) && ('LID' in req.body) && ('OUUID' in req.body) && ('Permission' in req.body)) {
+async function postUserHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body) && ('OUUID' in body) && ('Permission' in body)) {
         // only a user with admin permissions can add another user as admin
-        const userPermission = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
         if (dbclient.is_admin(userPermission)) {
             // string must consist of only 1s and 0s
-            if (req.body.Permission.match(/^[10]+$/)) {
-                if (parseInt(req.body.Permission, 2) > 0
-                && parseInt(req.body.Permission, 2) <= 15) {
-                    await dbclient.add_user(req.body.OUUID,
-                        req.body.LID, req.body.Permission);
-                    res.status(200).end();
-                } else {
-                    res.status(400).end();
+            const intPerm = parseInt(body.Permission, 2);
+            if (body.Permission.match(/^[10]+$/)) {
+                if (intPerm > 0 && intPerm <= 15) {
+                    await dbclient.add_user(body.OUUID,
+                        body.LID, body.Permission);
+                    output.status = 200;
+                    return output;
                 }
-            } else {
-                res.status(400).end();
             }
-        } else {
-            res.status(400).end();
         }
-    } else {
-        res.status(400).end();
     }
+    output.status = 400;
+    return output;
+}
+
+router.post('/user', async (req, res) => {
+    const output = await postUserHandler(req.body);
+    res.status(output.status).end();
 });
 
 module.exports = router;
