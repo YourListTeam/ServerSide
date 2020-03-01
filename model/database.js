@@ -26,7 +26,7 @@ async function readableLists(uuid) {
 }
 
 async function authenticate(lid, uuid) {
-    return pool.query("SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;",[lid, uuid]).then(response => response.rows);
+    return pool.query('SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;', [lid, uuid]).then((response) => response.rows);
 }
 
 function checkRead(permissionArray) {
@@ -100,12 +100,12 @@ function checkCompleted(iid) {
 
 function userInList(uuid, lid) {
     // returns true if user has permissions for specified list
-    return pool.query("SELECT * FROM Auth WHERE UUID = $1 AND LID = $2;", [uuid, lid]);
+    return pool.query('SELECT * FROM Auth WHERE UUID = $1 AND LID = $2;', [uuid, lid]);
 }
 
-function delete_user(uuid,lid) {
-	// contact must be previously added to the list
-	return pool.query("DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;",[uuid,lid]);
+function deleteUser(uuid, lid) {
+    // contact must be previously added to the list
+    return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
 module.exports = {
@@ -124,7 +124,7 @@ module.exports = {
     get_list: getListByLid,
     create_new_list: createList,
     create_admin: addPermission,
-    delete_contact: delete_user,
+    delete_contact: deleteUser,
     user_in_list: userInList,
     add_item: addItem,
     get_items: getItems,
