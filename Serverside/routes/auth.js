@@ -1,56 +1,105 @@
 const express = require('express');
-
-const router = express.Router();
 const dbclient = require('../model/database.js');
 
-/* GET auth listing. */
-router.get('/', async (req, res, next) => {
-    if (('UUID' in req.body) && ('LID' in req.body)) {
-        result = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
+const router = express.Router();
+
+async function getHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body)) {
+        const result = await dbclient.authenticate_list(body.LID, body.UUID);
         if (result) {
-            res.json(result[0]);
+            output.status = 200;
+            [output.json] = [result[0]];
         } else {
-            res.status(404).end();
+            output.status = 404;
         }
     } else {
-        res.status(400).end();
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/', async (req, res) => {
+    const output = await getHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
 
 /* POST auth for a given list and user. */
-router.post('/admin', async (req, res, next) => {
-    if (('UUID' in req.body) && ('LID' in req.body)) {
-        result = await dbclient.create_admin(req.body.UUID, req.body.LID);
-        if (result.rows) {
-            res.status(200).end();
-        } else {
-            res.status(409).end();
-        }
+async function postAdminHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body)) {
+        await dbclient.add_user(body.UUID, body.LID, 1111);
+        output.status = 200;
     } else {
-        res.status(400).end();
+        output.status = 400;
     }
+    return output;
+}
+
+router.post('/admin', async (req, res) => {
+    const output = await postAdminHandler(req.body);
+    res.status(output.status).end();
+});
+
+/* POST user for a given list and user. */
+async function postUserHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body) && ('OUUID' in body) && ('Permission' in body)) {
+        // only a user with admin permissions can add another user as admin
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.is_admin(userPermission)) {
+            // string must consist of only 1s and 0s
+            const intPerm = parseInt(body.Permission, 2);
+            if (body.Permission.match(/^[10]+$/)) {
+                if (intPerm > 0 && intPerm <= 15) {
+                    await dbclient.add_user(body.OUUID,
+                        body.LID, body.Permission);
+                    output.status = 200;
+                    return output;
+                }
+            }
+        }
+    }
+    output.status = 400;
+    return output;
+}
+
+router.post('/user', async (req, res) => {
+    const output = await postUserHandler(req.body);
+    res.status(output.status).end();
 });
 
 /* DELETE another user for a given list. */
-router.delete('/user', async (req, res, next) => {
-    if ('LID' in req.body && 'UUID' in req.body && 'OUUID' in req.body) {
-        // user needs to have admin or modify permissions
-        const userPermission = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
 
+async function deleteHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body && 'OUUID' in body) {
+        // user needs to have admin or modify permissions
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
         if (dbclient.is_admin(userPermission)) {
-            const contactPermission = await dbclient.user_in_list(req.body.OUUID, req.body.LID);
+            const contactPermission = await dbclient.user_in_list(body.OUUID, body.LID);
             if (contactPermission.rows[0]) {
-                result = await dbclient.delete_contact(req.body.OUUID, req.body.LID);
-                res.status(200).end();
+                await dbclient.delete_contact(body.OUUID, body.LID);
+                output.status = 200;
             } else {
-                res.status(400).end();
+                output.status = 400;
             }
         } else {
-            res.status(401).end();
+            output.status = 401;
         }
     } else {
-        res.status(400).end();
+        output.status = 400;
     }
+    return output;
+}
+
+router.delete('/user', async (req, res) => {
+    const output = await deleteHandler(req.body);
+    res.status(output.status).end();
 });
 
 module.exports = router;
