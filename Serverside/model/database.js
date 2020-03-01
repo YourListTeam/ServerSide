@@ -84,6 +84,16 @@ function checkCompleted(iid) {
     return pool.query('SELECT Completed FROM Items Where Iid=$1', [iid]);
 }
 
+function userInList(uuid, lid) {
+    // returns true if user has permissions for specified list
+    return pool.query('SELECT * FROM Auth WHERE UUID = $1 AND LID = $2;', [uuid, lid]);
+}
+
+function deleteUser(uuid, lid) {
+    // contact must be previously added to the list
+    return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
+}
+
 module.exports = {
     db_pool: pool,
     get_user: getUserByUuid,
@@ -99,6 +109,8 @@ module.exports = {
     readable_lists: readableLists,
     get_list: getListByLid,
     create_new_list: createList,
+    delete_contact: deleteUser,
+    user_in_list: userInList,
     add_user: addPermission,
     add_item: addItem,
     get_items: getItems,

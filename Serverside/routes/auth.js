@@ -2,7 +2,7 @@ const express = require('express');
 const dbclient = require('../model/database.js');
 
 const router = express.Router();
-/* GET auth listing. */
+
 async function getHandler(body) {
     const output = {};
     if (('UUID' in body) && ('LID' in body)) {
@@ -70,6 +70,35 @@ async function postUserHandler(body) {
 
 router.post('/user', async (req, res) => {
     const output = await postUserHandler(req.body);
+    res.status(output.status).end();
+});
+
+/* DELETE another user for a given list. */
+
+async function deleteHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body && 'OUUID' in body) {
+        // user needs to have admin or modify permissions
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.is_admin(userPermission)) {
+            const contactPermission = await dbclient.user_in_list(body.OUUID, body.LID);
+            if (contactPermission.rows[0]) {
+                await dbclient.delete_contact(body.OUUID, body.LID);
+                output.status = 200;
+            } else {
+                output.status = 400;
+            }
+        } else {
+            output.status = 401;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.delete('/user', async (req, res) => {
+    const output = await deleteHandler(req.body);
     res.status(output.status).end();
 });
 
