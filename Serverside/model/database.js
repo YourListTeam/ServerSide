@@ -44,30 +44,17 @@ function checkAdmin(permissionArray) {
     return ((permissionArray.length > 0) && permissionArray[0].permission[0] === '1');
 }
 
-function getListByLid(response, lid) {
-    pool.query('SELECT * FROM Lists WHERE LID=$1;', [lid]).then((ret) => {
-        if (ret.rows) {
-            response.status(200).json(ret.rows[0]);
-        } else {
-            response.status(404);
-        }
-    }).catch(() => {
-        response.status(500);
-    });
+function getListByLid(lid) {
+    return pool.query('SELECT * FROM Lists WHERE LID=$1;', [lid]);
 }
 
 
-function createList(response, uuid, lid, lname, rbg) {
+function createList(lid, lname, rbg) {
     // insert the new lists into Lists
     const currentDate = new Date();
     // currentDate upon creation creates the current date
     // which can be used to determine its modification date
-    pool.query('INSERT INTO Lists (LID, listname, Colour, Modified) VALUES ($1, $2, $3, $4);', [lid, lname, rbg, currentDate]).then(() => {
-        response.status(200).json();
-    }).catch((e) => {
-        console.error(e.stack);
-        response.status(500);
-    });
+    return pool.query('INSERT INTO Lists (LID, listname, Colour, Modified) VALUES ($1, $2, $3, $4);', [lid, lname, rbg, currentDate]);
 }
 
 function addPermission(uuid, lid, permission) {
