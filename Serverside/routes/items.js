@@ -4,7 +4,7 @@ const router = express.Router();
 const dbclient = require('../model/database.js');
 
 /* GET a single item. */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
     if ('IID' in req.body && 'UUID' in req.body) {
         const ret = await dbclient.get_item(req.body.IID);
         if (ret.rows) {
@@ -23,12 +23,12 @@ router.get('/', async (req, res, next) => {
 });
 
 /* PUT a single item. */
-router.put('/', async (req, res, next) => {
+router.put('/', async (req, res) => {
     try {
         if ('LID' in req.body && 'UUID' in req.body && 'Name' in req.body) {
             const permission = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
             if (dbclient.can_write(permission)) {
-                result = await dbclient.add_item(req.body);
+                await dbclient.add_item(req.body);
             } else {
                 res.status(401).end();
             }
@@ -40,12 +40,12 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-router.patch('/', async (req, res, next) => {
+router.patch('/', async (req, res) => {
     try {
         if ('LID' in req.body && 'UUID' in req.body) {
             const permission = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
             if (dbclient.can_write(permission)) {
-                result = await dbclient.update_item(req.body);
+                await dbclient.update_item(req.body);
             } else {
                 res.status(401).end();
             }
@@ -57,7 +57,7 @@ router.patch('/', async (req, res, next) => {
     }
 });
 
-router.get('/completed', async (req, res, next) => {
+router.get('/completed', async (req, res) => {
     if ('IID' in req.body) {
         const ret = await dbclient.get_completed(req.body.IID);
         if (ret.rows) {
@@ -70,12 +70,12 @@ router.get('/completed', async (req, res, next) => {
     }
 });
 
-router.post('/completed', async (req, res, next) => {
+router.post('/completed', async (req, res) => {
     try {
         if ('LID' in req.body && 'UUID' in req.body && 'Completed' in req.body) {
             const permission = await dbclient.authenticate_list(req.body.LID, req.body.UUID);
             if (dbclient.can_write(permission)) {
-                result = await dbclient.set_completed(req.body.Completed);
+                await dbclient.set_completed(req.body.Completed);
             } else {
                 res.status(401).end();
             }
