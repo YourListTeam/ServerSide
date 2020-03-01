@@ -100,7 +100,7 @@ function checkCompleted(iid) {
 
 function delete_user(uuid,lid) {
 	// contact must be previously added to the list
-	return pool.query("DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;",[uuid,lid]);
+	return pool.query("DELETE FROM Auth WHERE EXISTS(SELECT * FROM Auth WHERE UUID = $1 AND LID = $2) RETURNING *;",[uuid,lid]);
 }
 
 module.exports = {
@@ -119,6 +119,7 @@ module.exports = {
     get_list: getListByLid,
     create_new_list: createList,
     create_admin: addPermission,
+    delete_contact: delete_user,
     add_item: addItem,
     get_items: getItems,
 };
