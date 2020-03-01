@@ -9,9 +9,8 @@ function getUserByUuid(uuid) {
 }
 
 function setUser(uuid, user) {
-    pool.query('UPDATE users SET name=$1, email=$2, homelocation=$3 WHERE UUID=$4;', [user.name, user.email, user.homelocation, uuid]);
+    return pool.query('UPDATE users SET Name=$1, Email=$2, HomeLocation=$3 WHERE UUID=$4;', [user.Name, user.Email, user.HomeLocation, uuid]);
 }
-
 
 function getItem(iid) {
     return pool.query('SELECT * FROM Items WHERE IID=$1;', [iid]);
