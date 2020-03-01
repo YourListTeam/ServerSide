@@ -1,12 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-const validator = require('validator');
+// const validator = require('validator');
 const dbclient = require('../model/database.js');
 
-
 /* GET users listing. */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
     if ('UUID' in req.body) {
         const ret = await dbclient.get_user(req.body.UUID);
         if (ret.rows) {
@@ -19,7 +18,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.patch('/', async (req, res, next) => {
+router.patch('/', async (req, res) => {
     if ('UUID' in req.body) {
         const ret = await dbclient.get_user(req.body.UUID);
         if (ret.rows) {
