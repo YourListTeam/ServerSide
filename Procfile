@@ -1,0 +1,1 @@
+web: Serverside/setup.sh
