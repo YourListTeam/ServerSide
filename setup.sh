@@ -2,16 +2,14 @@
 echo "creating public and private key files";
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
-echo $PRIVATE_KEY > id_rsa;
-echo $PUBLIC_KEY > id_rsa.pub;
 
 # Create the public and private key files from the environment variables.
 echo "${PUBLIC_KEY}" > ~/.ssh/id_rsa.pub
-chmod 644 $~/.ssh/heroku_id_rsa.pub
+chmod 644 $~/.ssh/id_rsa.pub
 
 # Note use of double quotes, required to preserve newlines
 echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/heroku_id_rsa
+chmod 600 ~/.ssh/id_rsa
 
 # Preload the known_hosts file  (see "version 2" below)
 
