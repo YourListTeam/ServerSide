@@ -11,8 +11,8 @@ chmod 644 ~/.ssh/id_rsa.pub
 echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-export PUBLIC_KEY= "";
-export PRIVATE_KEY= "";
+export PUBLIC_KEY="";
+export PRIVATE_KEY="";
 
 # Preload the known_hosts file  (see "version 2" below)
 echo '|1|bylPsc3uS1RQlpazXkm7TWGJOmI=|eEufAkxxshMXHoKRx79WhiSgm1E= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDbI2skbGdMXwfidMPoVneQsH5DUbkvZ9sJxtzfanuEpanQShDYym9NHsuQB/bjuUnE20eQAW6H7k969bC0nrmU=
