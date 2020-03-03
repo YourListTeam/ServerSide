@@ -5,7 +5,7 @@ chmod 700 ~/.ssh
 
 # Create the public and private key files from the environment variables.
 echo "${PUBLIC_KEY}" > ~/.ssh/id_rsa.pub
-chmod 644 $~/.ssh/id_rsa.pub
+chmod 644 ~/.ssh/id_rsa.pub
 
 # Note use of double quotes, required to preserve newlines
 echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa
