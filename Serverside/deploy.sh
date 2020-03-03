@@ -28,7 +28,7 @@ echo "Host cslinux
 
 # Start the SSH tunnel if not already running
 
-PID=`pgrep -f ssh`
+PID=`pgrep -f "ssh -f -i"`
 if [ $PID ] ; then
     echo "tunnel already running on ${PID}";
 else
