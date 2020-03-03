@@ -21,7 +21,7 @@ echo '|1|bylPsc3uS1RQlpazXkm7TWGJOmI=|eEufAkxxshMXHoKRx79WhiSgm1E= ecdsa-sha2-ni
 echo "Host cslinux
     Hostname cslinux.utm.utoronto.com
     Port 22
-    User {$UTORID}
+    User $UTORID
     ServerAliveInterval 240
     ServerAliveCountMax 2" > ~/.ssh/config
 
