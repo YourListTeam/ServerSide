@@ -5,5 +5,5 @@ if [ $? == 0 ]; then
     kill $proc;
 fi
 npm i;
-ssh -f -N -L 5433:mcsdb.utm.utoronto.ca:5432 azarskyy@cslinux.utm.utoronto.ca;
+ssh -f -N -L 5433:mcsdb.utm.utoronto.ca:5432 $UTORID@cslinux.utm.utoronto.ca;
 npx nodemon app.js;
