@@ -33,8 +33,9 @@ router.get('/', async (req, res) => {
 /* POST list. */
 async function postHandler(body) {
     const output = {};
-    if ('UUID' in body) {
+    if ('UUID' in body && 'listname' in body && 'Color' in body) {
         const lid = uuidGen.v4();
+        console.log(lid);
         await dbclient.create_new_list(lid, body.listname, body.Colour);
         await dbclient.add_user(body.UUID, lid, 15);
         output.status = 200;
