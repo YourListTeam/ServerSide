@@ -1,45 +1,128 @@
-var express = require('express');
-var router = express.Router();
-var dbclient = require('../model/database.js');
+const express = require('express');
+const dbclient = require('../model/database.js');
 
+const router = express.Router();
 /* GET a single item. */
-router.get('/', async function(req, res, next) {
-    if ("IID" in req.body && "UUID" in req.body) {
-        let ret = await dbclient.get_item(req.body["IID"]);
+async function getHandler(body) {
+    const output = {};
+    if ('IID' in body && 'UUID' in body) {
+        const ret = await dbclient.get_item(body.IID);
         if (ret.rows) {
-            permission = await dbclient.authenticate_list(ret.rows[0]['lid'],req.body['UUID']);
+            const permission = await dbclient.authenticate_list(ret.rows[0].lid, body.UUID);
             if (dbclient.can_read(permission)) {
-                res.status(200).json(ret.rows[0]);
+                output.status = 200;
+                [output.json] = [ret.rows[0]];
             } else {
-                res.status(401).end();
+                output.status = 401;
             }
         } else {
-            res.status(404).end();
+            output.status = 404;
         }
     } else {
-        res.status(400).end();
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/', async (req, res) => {
+    const output = await getHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
 
 /* PUT a single item. */
-router.put('/', async function(req, res, next) {
-    try {
-        if ("LID" in req.body && "UUID" in req.body && 'Name' in req.body) {
-            permission = await dbclient.authenticate_list(req.body['LID'],req.body['UUID']);
-            if (dbclient.can_write(permission)) {
-                result = await dbclient.add_item(req.body);
-            } else {
-                res.status(401).end();
-            }
+async function putHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body && 'Name' in body) {
+        const permission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.can_write(permission)) {
+            await dbclient.add_item(body);
+            output.status = 200;
         } else {
-            res.status(400).end();
+            output.status = 401;
         }
-    } catch (err) {
-        res.status(500).end();
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.put('/', async (req, res) => {
+    const output = await putHandler(req.body);
+    res.status(output.status).end();
+});
+
+async function patchHandle(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body) {
+        const permission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.can_write(permission)) {
+            await dbclient.update_item(body);
+            output.status = 200;
+        } else {
+            output.status = 401;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.patch('/', async (req, res) => {
+    const output = await patchHandle(req.body);
+    res.status(output.status).end();
+});
+
+async function getCompletedHandler(body) {
+    const output = {};
+    if ('IID' in body) {
+        const ret = await dbclient.get_completed(body.IID);
+        if (ret.rows) {
+            output.status = 200;
+            [output.json] = [ret.rows[0]];
+        } else {
+            output.status = 404;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/completed', async (req, res) => {
+    const output = await getCompletedHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
 
-/* GET all items from a list. 
+async function postCompletedHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body && 'Completed' in body) {
+        const permission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.can_write(permission)) {
+            await dbclient.set_completed(body.Completed);
+            output.status = 200;
+        } else {
+            output.status = 401;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.post('/completed', async (req, res) => {
+    const output = await postCompletedHandler(req.body);
+    res.status(output.status).end();
+});
+
+/* GET all items from a list.
 router.get('/items', async function(req, res, next) {
     if ("LID" in req.body) {
       let ret = await dbclient.get_items(req.body["LID"]);
@@ -53,7 +136,7 @@ router.get('/items', async function(req, res, next) {
     }
 });
 
- GET set of items. 
+ GET set of items.
 router.get('/items', async function(req, res, next) {
     if ("LID" in req.body) {
       let ret = await dbclient.get_items(req.body["LID"]);
@@ -65,6 +148,6 @@ router.get('/items', async function(req, res, next) {
     } else {
       res.status(400);
     }
-});*/
+}); */
 
 module.exports = router;
