@@ -61,7 +61,8 @@ function addPermission(uuid, lid, permission) {
     // insert the new list's user's permissions into Auth
     // as this only occurs when the user is creating a list, they are the admin
     // so they have full permissions
-    return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, CAST($3 AS BIT(4))) RETURNING *', [uuid, lid, permission]);
+    let b_str = (permission >>> 0).toString(2);
+    return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, b_str]);
 }
 
 function addItem(body) {
