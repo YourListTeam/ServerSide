@@ -95,6 +95,18 @@ function deleteUser(uuid, lid) {
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
+function locationExists(lid, long,lat) {
+    // returns true if user has permissions for specified list
+    return pool.query('SELECT * FROM Locations WHERE LID = $1 AND Address ~= POINT($2,$3);', [lid, long,lat]);
+    // should one list have only one location
+    // return pool.query('SELECT * FROM Locations WHERE LID = $1;', [lid]);
+}
+
+function createLocation(lid, long,lat) {
+    // returns true if user has permissions for specified list
+    return pool.query('INSERT INTO Locations (LID, Address) VALUES ($1, POINT($2,$3)) RETURNING *;', [lid, long,lat]);
+}
+
 module.exports = {
     db_pool: pool,
     get_user: getUserByUuid,
@@ -115,4 +127,6 @@ module.exports = {
     add_user: addPermission,
     add_item: addItem,
     get_items: getItems,
+    check_location: locationExists,
+    create_location: createLocation
 };
