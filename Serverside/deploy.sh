@@ -29,7 +29,7 @@ if [ $PID ] ; then
     echo "tunnel already running on ${PID}";
 else
     echo "launching tunnel";
-    ssh -f -i ~/.ssh/id_rsa -N -L 5433:mcsdb.utm.utoronto.ca:5432 $UTORID@cslinux.utm.utoronto.ca;
+    ssh -f -i ~/.ssh/id_rsa -N -L 5433:mcsdb.utm.utoronto.ca:5432 $UTORID@dh2026pc00.utm.utoronto.ca;
 fi
 
 node app.js;
