@@ -80,14 +80,17 @@ async function postLocationHandler(body) {
     const output = {};
     if ('LID' in body && 'Address' in body) {
         // must check if the location already exists in the table
-        const locExists = await dbclient.check_location(body.LID, body.Address.Longitude,body.Address.Latitude);    
+        const locExists = await dbclient.check_location(body.LID,
+            body.Address.Longitude, body.Address.Latitude);
         output.status = 400;
-        if (!locExists.rows[0]){
+        if (!locExists.rows[0]) {
             // latitude is valid
-            if (-90<=body.Address.Latitude && body.Address.Latitude<=90){
+            if (body.Address.Latitude >= -90 && body.Address.Latitude <= 90) {
                 // longitude is valid
-                if (-180<=body.Address.Longitude && body.Address.Longitude<=180){
-                    await dbclient.create_location(body.LID, body.Address.Longitude,body.Address.Latitude);
+                if (body.Address.Longitude >= -180
+                    && body.Address.Longitude <= 180) {
+                    await dbclient.create_location(body.LID, body.Address.Longitude,
+                        body.Address.Latitude);
                     output.status = 200;
                 }
             }
