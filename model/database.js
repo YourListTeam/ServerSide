@@ -61,7 +61,7 @@ function addPermission(uuid, lid, permission) {
     // insert the new list's user's permissions into Auth
     // as this only occurs when the user is creating a list, they are the admin
     // so they have full permissions
-    let b_str = (permission >>> 0).toString(2);
+    const b_str = (permission >>> 0).toString(2);
     return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, b_str]);
 }
 
@@ -95,16 +95,16 @@ function deleteUser(uuid, lid) {
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
-function locationExists(lid, long,lat) {
+function locationExists(lid, long, lat) {
     // returns true if user has permissions for specified list
-    return pool.query('SELECT * FROM Locations WHERE LID = $1 AND Address ~= POINT($2,$3);', [lid, long,lat]);
+    return pool.query('SELECT * FROM Locations WHERE LID = $1 AND Address ~= POINT($2,$3);', [lid, long, lat]);
     // should one list have only one location
     // return pool.query('SELECT * FROM Locations WHERE LID = $1;', [lid]);
 }
 
-function createLocation(lid, long,lat) {
+function createLocation(lid, long, lat) {
     // returns true if user has permissions for specified list
-    return pool.query('INSERT INTO Locations (LID, Address) VALUES ($1, POINT($2,$3)) RETURNING *;', [lid, long,lat]);
+    return pool.query('INSERT INTO Locations (LID, Address) VALUES ($1, POINT($2,$3)) RETURNING *;', [lid, long, lat]);
 }
 
 module.exports = {
@@ -128,5 +128,5 @@ module.exports = {
     add_item: addItem,
     get_items: getItems,
     check_location: locationExists,
-    create_location: createLocation
+    create_location: createLocation,
 };
