@@ -33,7 +33,7 @@ async function postLocationHandler(body) {
     return output;
 }
 
-router.post('/location', async (req, res) => {
+router.post('/', async (req, res) => {
     const output = await postLocationHandler(req.body);
     res.status(output.status).end();
 });
