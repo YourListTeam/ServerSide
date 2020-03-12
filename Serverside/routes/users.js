@@ -8,11 +8,11 @@ async function getHandler(body) {
     const output = {};
     if ('UUID' in body) {
         const ret = await dbclient.get_user(body.UUID);
-        if (ret.rows) {
+        if (ret.rows.length) {
             output.status = 200;
             [output.json] = [ret.rows[0]];
         } else {
-            output.status = 400;
+            output.status = 404;
         }
     } else {
         output.status = 400;
@@ -46,6 +46,27 @@ async function patchHandler(body) {
     return output;
 }
 
+async function postHandler(body) {
+    const output = {};
+    if ('UUID' in body) {
+        // const ret = await dbclient.get_user(body.UUID);
+        const parameters = [body.UUID];
+        const fields = ['username', 'name', 'home', 'email'];
+        for (let i = 0; i < fields.length; i += 1) {
+            parameters.push((fields[i] in body) ? body[fields[i]] : null);
+        }
+        const result = await dbclient.create_user(parameters);
+        if (result.rows) {
+            output.status = 200;
+        } else {
+            output.status = 409;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
 /* GET users listing. */
 router.get('/', async (req, res) => {
     const output = await getHandler(req.body);
@@ -58,6 +79,11 @@ router.get('/', async (req, res) => {
 
 router.patch('/', async (req, res) => {
     const output = await patchHandler(req.body);
+    res.status(output.status).end();
+});
+
+router.post('/', async (req, res) => {
+    const output = await postHandler(req.body);
     res.status(output.status).end();
 });
 
