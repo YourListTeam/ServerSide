@@ -6,49 +6,57 @@ const geocodingClient = mbxGeocoding({accessToken: MAPBOX_ACCESS_TOKEN});
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const output = await getLocationHandler(req.body);
-    res.status(200).end();
-    
-});
-
 async function getLocationHandler(body) {
+  output={};
+    var toSearch=body.Address;
     geocodingClient.forwardGeocode({
-        query: 'Paris, France',
-        countries: ['fr'],
-        limit: 2
+        query: toSearch,
+        countries: ['ca'],
+        limit: 3
       })
         .send()
         .then(response => {
           const match = response.body;
-          console.log(match.features[0].geometry.coordinates);
+          // console.log(match.features[0].relevance);
+          // console.log(match.features[0].geometry.coordinates);
+          output.relevance = match.features[0].relevance;
+          output.coordinates=match.features[0].geometry.coordinates;
+          output.status=200;
+          return output;
         });
 }
 
 /* POST location. */
-async function postLocationHandler(body) {
+async function postLocationHandler(body,callback) {
     const output = {};
+    const forwardencoding={};
     if ('LID' in body && 'UUID' in body && 'Address' in body) {
         // check if user has writing permission
         output.status = 400;
         const permission = await dbclient.authenticate_list(body.LID, body.UUID);
         if (dbclient.can_write(permission)) {
+          console.log(body.Address);
+          // forward encode given address mapbox to get its coordinates
+          var temp = await callback(body);
+          console.log(temp);
+
+          // check the result's relevance from query
+          if (forwardencoding.rel >= 0.8){
+            var long = forwardencoding.coo[0];
+            var lat = forwardencoding.coo[1];
+            console.log(long);
+            console.log(lat);
+
             // must check if the location already exists in the table
             const locExists = await dbclient.check_location(body.LID,
-                body.Address.Longitude, body.Address.Latitude);
-            if (!locExists.rows[0]) {
-                // latitude is valid
-                if (body.Address.Latitude >= -90 && body.Address.Latitude <= 90) {
-                    // longitude is valid
-                    if (body.Address.Longitude >= -180
-                        && body.Address.Longitude <= 180) {
-                        await dbclient.create_location(body.LID, body.Address.Longitude,
-                            body.Address.Latitude);
-                        output.status = 200;
-                    }
-                }
-            }
-        }
+            long, lat);
+            console.log(locExists);
+
+            // await dbclient.create_location(body.LID,long,lat);
+            output.status = 200;
+          }
+            
+      }
     } else {
         output.status = 400;
     }
@@ -56,7 +64,7 @@ async function postLocationHandler(body) {
 }
 
 router.post('/', async (req, res) => {
-    const output = await postLocationHandler(req.body);
+    const output = await postLocationHandler(req.body,getLocationHandler);
     res.status(output.status).end();
 });
 

@@ -98,8 +98,6 @@ function deleteUser(uuid, lid) {
 function locationExists(lid, long, lat) {
     // returns true if user has permissions for specified list
     return pool.query('SELECT * FROM Locations WHERE LID = $1 AND Address ~= POINT($2,$3);', [lid, long, lat]);
-    // should one list have only one location
-    // return pool.query('SELECT * FROM Locations WHERE LID = $1;', [lid]);
 }
 
 function createLocation(lid, long, lat) {
