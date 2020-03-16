@@ -95,10 +95,6 @@ function deleteUser(uuid, lid) {
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
-function locationExists(lid, long, lat) {
-    // returns true if user has permissions for specified list
-    return pool.query('SELECT * FROM Locations WHERE LID = $1 AND Address ~= POINT($2,$3);', [lid, long, lat]);
-}
 
 function createLocation(lid, long, lat) {
     // returns true if user has permissions for specified list
@@ -125,6 +121,5 @@ module.exports = {
     add_user: addPermission,
     add_item: addItem,
     get_items: getItems,
-    check_location: locationExists,
     create_location: createLocation,
 };
