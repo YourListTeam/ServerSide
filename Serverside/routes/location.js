@@ -1,7 +1,29 @@
 const express = require('express');
 const dbclient = require('../model/database.js');
+const mbxGeocoding = require('../../node_modules/@mapbox/mapbox-sdk/services/geocoding');
+const MAPBOX_ACCESS_TOKEN = process.env.mapbox;
+const geocodingClient = mbxGeocoding({accessToken: MAPBOX_ACCESS_TOKEN});
 
 const router = express.Router();
+
+router.get('/', async (req, res) => {
+    const output = await getLocationHandler(req.body);
+    res.status(200).end();
+    
+});
+
+async function getLocationHandler(body) {
+    geocodingClient.forwardGeocode({
+        query: 'Paris, France',
+        countries: ['fr'],
+        limit: 2
+      })
+        .send()
+        .then(response => {
+          const match = response.body;
+          console.log(match.features[0].geometry.coordinates);
+        });
+}
 
 /* POST location. */
 async function postLocationHandler(body) {
