@@ -12,8 +12,6 @@ const app = express();
 
 PORT = process.env.PORT || 3000;
 
-MAPBOX_ACCESS_TOKEN = process.env.mapbox;
-
 app.use(express.json());
 app.use(helmet());
 app.use(express.urlencoded({ extended: false }));
