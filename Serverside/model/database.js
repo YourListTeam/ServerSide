@@ -12,6 +12,10 @@ function setUser(uuid, user) {
     return pool.query('UPDATE users SET Name=$1, Email=$2, HomeLocation=$3 WHERE UUID=$4;', [user.Name, user.Email, user.HomeLocation, uuid]);
 }
 
+function makeUser(parameters) {
+    return pool.query('INSERT INTO users VALUES ($1, $2, $3, $4, $5, NULL) RETURNING *;', parameters);
+}
+
 function getItem(iid) {
     return pool.query('SELECT * FROM Items WHERE IID=$1;', [iid]);
 }
@@ -61,8 +65,8 @@ function addPermission(uuid, lid, permission) {
     // insert the new list's user's permissions into Auth
     // as this only occurs when the user is creating a list, they are the admin
     // so they have full permissions
-    let b_str = (permission >>> 0).toString(2);
-    return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, b_str]);
+    const bStr = (permission >>> 0).toString(2);
+    return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, bStr]);
 }
 
 function addItem(body) {
@@ -99,6 +103,7 @@ module.exports = {
     db_pool: pool,
     get_user: getUserByUuid,
     set_user: setUser,
+    create_user: makeUser,
     get_item: getItem,
     authenticate_list: authenticate,
     can_read: checkRead,

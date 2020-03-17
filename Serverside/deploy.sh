@@ -19,7 +19,7 @@ echo '|1|CKLNmnXUo20IblyvVtK5eqfxkhE=|S+SYmJgNXZiqCIJWGAnPKyb8bJA= ecdsa-sha2-ni
 |1|fymPIWUfoi/iq9PZP8jCC30IWGg=|Tjs/hHryX7xHP4rFcneRMf4CyeE= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOqyHh/myL33e9GtA45bPkjaUEoO3nRqqsMgYaRB3ihuvAkiSQLZCMp5BbE8Dq4abL3XhfsdM21YDWxrHHS02Ow=' > ~/.ssh/known_hosts
 
 echo "Host *
-    ServerAliveInterval 60" > ~/.ssh/config
+    ServerAliveInterval 120" > ~/.ssh/config
 
 
 # Start the SSH tunnel if not already running
