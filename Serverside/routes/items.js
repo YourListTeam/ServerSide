@@ -122,32 +122,36 @@ router.post('/completed', async (req, res) => {
     res.status(output.status).end();
 });
 
-/* GET all items from a list.
-router.get('/items', async function(req, res, next) {
-    if ("LID" in req.body) {
-      let ret = await dbclient.get_items(req.body["LID"]);
-      if (ret.rows) {
-        res.status(200).json(ret.rows[0]);
-      } else {
-        res.status(404);
-      }
+// GET all items from a list.
+
+async function getItemsHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body) {
+        const permission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.can_write(permission)) {
+            const ret = await dbclient.get_items(body.LID);
+            if (ret.rows) {
+                output.status = 200;
+                [output.json] = [ret.rows];
+            } else {
+                output.status = 404;
+            }
+        } else {
+            output.status = 401;
+        }
     } else {
-      res.status(400);
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/many', async (req, res) => {
+    const output = await getItemsHandler(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
     }
 });
-
- GET set of items.
-router.get('/items', async function(req, res, next) {
-    if ("LID" in req.body) {
-      let ret = await dbclient.get_items(req.body["LID"]);
-      if (ret.rows) {
-        res.status(200).json(ret.rows[0]);
-      } else {
-        res.status(404);
-      }
-    } else {
-      res.status(400);
-    }
-}); */
 
 module.exports = router;

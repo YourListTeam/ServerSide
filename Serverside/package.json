@@ -6,6 +6,7 @@
     "start": "./setup.sh"
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.9.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
