@@ -9,6 +9,7 @@
 .history
 .svn/
 *.out
+node_modules
 
 # IntelliJ related
 *.iml
