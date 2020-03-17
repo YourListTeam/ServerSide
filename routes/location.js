@@ -1,6 +1,6 @@
 const express = require('express');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const dbclient = require('../model/database.js');
-const mbxGeocoding = require('../../node_modules/@mapbox/mapbox-sdk/services/geocoding');
 
 const MAPBOX_ACCESS_TOKEN = process.env.mapbox;
 const geocodingClient = mbxGeocoding({ accessToken: MAPBOX_ACCESS_TOKEN });
