@@ -65,6 +65,7 @@ function addPermission(uuid, lid, permission) {
     // insert the new list's user's permissions into Auth
     // as this only occurs when the user is creating a list, they are the admin
     // so they have full permissions
+    // eslint-disable-next-line no-bitwise
     const bStr = (permission >>> 0).toString(2);
     return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, bStr]);
 }
@@ -99,6 +100,12 @@ function deleteUser(uuid, lid) {
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
+
+function createLocation(lid, long, lat) {
+    // returns true if user has permissions for specified list
+    return pool.query('INSERT INTO Locations (LID, Address) VALUES ($1, POINT($2,$3)) RETURNING *;', [lid, long, lat]);
+}
+
 module.exports = {
     db_pool: pool,
     get_user: getUserByUuid,
@@ -120,4 +127,5 @@ module.exports = {
     add_user: addPermission,
     add_item: addItem,
     get_items: getItems,
+    create_location: createLocation,
 };

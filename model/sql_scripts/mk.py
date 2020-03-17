@@ -14,7 +14,7 @@ guid_finder = re.compile(r'[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a
 random.shuffle(l)
 random.shuffle(f)
 
-lists = [guid_finder.search(i).group(0) for i in l][:50]
+lists = [guid_finder.search(i).group(0) for i in l]
 uuids = [guid_finder.search(i).group(0)  for i in f]
 
 format_s = "insert into Auth (UUID, LID, Permission) values ('{0}','{1}','{2}');"
@@ -32,7 +32,7 @@ for uuid in uuids:
             a = random.randint(1,15)
             print(format_s.format(uuid, v, "{0:04b}".format(a)))
         if (a & 2):
-            for i in range(random.randint(0,5)):
+            for i in range(random.randint(0,3)):
                 iid = UUID.uuid4()
                 b = bool(random.randint(0,1))
                 print(format_i.format(iid, uuid, v, random.choice(words), b))
