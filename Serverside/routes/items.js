@@ -128,7 +128,7 @@ async function getItemsHandler(body) {
     const output = {};
     if ('LID' in body && 'UUID' in body) {
         const permission = await dbclient.authenticate_list(body.LID, body.UUID);
-        if (dbclient.can_write(permission)) {
+        if (dbclient.can_read(permission)) {
             const ret = await dbclient.get_items(body.LID);
             if (ret.rows) {
                 output.status = 200;
