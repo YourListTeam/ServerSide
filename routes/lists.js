@@ -75,4 +75,29 @@ router.get('/readable_lists', async (req, res) => {
     }
 });
 
+/* DELETE a given list. */
+
+async function deleteListHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body) {
+        // user needs to have admin permissions to completely remove a list
+        // to remove a user from a list, see delete /user in user route
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.is_admin(userPermission)) {
+            await dbclient.delete_list(body.LID);
+            output.status = 200;
+        } else {
+            output.status = 401;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.delete('/', async (req, res) => {
+    const output = await deleteListHandler(req.body);
+    res.status(output.status).end();
+});
+
 module.exports = router;
