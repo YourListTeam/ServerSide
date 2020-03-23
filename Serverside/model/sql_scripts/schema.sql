@@ -8,8 +8,8 @@ CREATE TABLE Users (
 );
 CREATE TABLE Lists (
     LID varchar(36) PRIMARY KEY,
-    listname varchar(10),
-    Colour varchar(11),
+    listname varchar(32),
+    Colour varchar(32),
     Modified date
 );
 CREATE TABLE Auth (
@@ -25,7 +25,7 @@ CREATE TABLE Items (
     IID varchar(36) PRIMARY KEY,
     UUID varchar(36),
     LID varchar(36),
-    Name varchar(10),
+    Name varchar(32),
     Completed boolean,
     Modified date,
     FOREIGN KEY (LID) REFERENCES Lists(LID)
@@ -47,5 +47,6 @@ CREATE TABLE Contacts (
 CREATE TABLE Locations(
     LID varchar(36),
     Address point,
+    Name varchar(64),
     FOREIGN KEY (LID) REFERENCES Lists(LID)
 );
