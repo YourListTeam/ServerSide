@@ -26,7 +26,7 @@ async function getLocationHandler(body) {
 async function postLocationHandler(body) {
     const output = {};
     output.status = 400;
-    if ('LID' in body && 'UUID' in body && 'Address' in body) {
+    if ('LID' in body && 'UUID' in body && 'Address' in body && 'Name' in body) {
         // check if user has writing permission
 
         const permission = await dbclient.authenticate_list(body.LID, body.UUID);
@@ -39,19 +39,22 @@ async function postLocationHandler(body) {
                     const lat = match.features[0].geometry.coordinates[1];
 
                     // add location to the table
-                    const creationpromise = dbclient.create_location(body.LID, long,
-                        lat).then(() => {
+                    return creationpromise = dbclient.create_location(body.LID, lat,
+                        long, body.Name).then(() => {
                         output.status = 200;
                         return output;
-                    }).catch(() => null);
-                    return creationpromise;
+                    }).catch(() => {
+                        output.status = 500;
+                        return output;
+                    });
                 }
-                return output;
+                output.status = 404;
+                return Promise.resolve(output);
             }).catch(() => null);
             return getpromise;
         }
     }
-    return output;
+    return Promise.resolve(output);
 }
 
 router.post('/', async (req, res) => {

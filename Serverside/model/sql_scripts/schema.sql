@@ -47,5 +47,6 @@ CREATE TABLE Contacts (
 CREATE TABLE Locations(
     LID varchar(36),
     Address point,
+    Name varchar(64),
     FOREIGN KEY (LID) REFERENCES Lists(LID)
 );
