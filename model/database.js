@@ -100,9 +100,9 @@ function deleteUser(uuid, lid) {
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
-function createLocation(lid, long, lat) {
+function createLocation(lid, long, lat, name) {
     // returns true if user has permissions for specified list
-    return pool.query('INSERT INTO Locations (LID, Address) VALUES ($1, POINT($2,$3)) RETURNING *;', [lid, long, lat]);
+    return pool.query('INSERT INTO Locations (LID, Address, Name) VALUES ($1, POINT($2,$3), $4) RETURNING *;', [lid, long, lat, name]);
 }
 
 function deleteList(lid) {
