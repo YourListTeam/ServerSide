@@ -1,11 +1,11 @@
 insert into Auth (UUID, LID, Permission) values ('776b4094-045d-4557-97d5-a4c2412fe4e3','b8a921e2-eb3c-42d4-a409-0fff81e8c97a','1111');
 insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('b14d90b8-d741-4027-b7d3-4e7d9f32ca92','776b4094-045d-4557-97d5-a4c2412fe4e3','b8a921e2-eb3c-42d4-a409-0fff81e8c97a','unkiss','True',NULL);
-insert into Auth (UUID, LID, Permission) values ('0b03030c-b84d-4f3e-b477-a56133aa6367','d15550f7-48e1-46ff-81eb-583616de76a2','1111');
-insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('c3a97586-481c-4dd8-906d-f381a07861c0','0b03030c-b84d-4f3e-b477-a56133aa6367','d15550f7-48e1-46ff-81eb-583616de76a2','gonimic','False',NULL);
-insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('7f2fc624-1c51-4a2a-8016-0ab00664754b','0b03030c-b84d-4f3e-b477-a56133aa6367','d15550f7-48e1-46ff-81eb-583616de76a2','Welsh','True',NULL);
-insert into Auth (UUID, LID, Permission) values ('0b03030c-b84d-4f3e-b477-a56133aa6367','490ad059-86af-43b3-a66d-51b835a15af6','1101');
-insert into Auth (UUID, LID, Permission) values ('0b03030c-b84d-4f3e-b477-a56133aa6367','9ff3c081-a43e-4901-bdfd-2796cb97f65b','1011');
-insert into Auth (UUID, LID, Permission) values ('0b03030c-b84d-4f3e-b477-a56133aa6367','4581b42c-50c1-41c3-bdd0-11c61d00bdad','0110');
+insert into Auth (UUID, LID, Permission) values ('TPOWiPOPAUc05oqb6p41rDmjA6w1','d15550f7-48e1-46ff-81eb-583616de76a2','1111');
+insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('c3a97586-481c-4dd8-906d-f381a07861c1','TPOWiPOPAUc05oqb6p41rDmjA6w1','d15550f7-48e1-46ff-81eb-583616de76a2','gonimic','False',NULL);
+insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('7f2fc624-1c51-4a2a-8016-0ab00664754c','TPOWiPOPAUc05oqb6p41rDmjA6w1','d15550f7-48e1-46ff-81eb-583616de76a2','Welsh','True',NULL);
+insert into Auth (UUID, LID, Permission) values ('TPOWiPOPAUc05oqb6p41rDmjA6w1','490ad059-86af-43b3-a66d-51b835a15af6','1101');
+insert into Auth (UUID, LID, Permission) values ('TPOWiPOPAUc05oqb6p41rDmjA6w1','9ff3c081-a43e-4901-bdfd-2796cb97f65b','1011');
+insert into Auth (UUID, LID, Permission) values ('TPOWiPOPAUc05oqb6p41rDmjA6w1','4581b42c-50c1-41c3-bdd0-11c61d00bdad','0110');
 insert into Auth (UUID, LID, Permission) values ('117a61fc-abdb-4ebe-8bba-6e55c9bccbda','637a531e-e5fa-41da-aa8a-c3457aec37a2','1111');
 insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('56581d6c-e244-427d-9eaf-a491d03bc139','117a61fc-abdb-4ebe-8bba-6e55c9bccbda','637a531e-e5fa-41da-aa8a-c3457aec37a2','puddee','True',NULL);
 insert into Items (IID, UUID, LID, Name, Completed, Modified) values ('8a7069e7-9a94-485f-b201-eedb061d3fb1','117a61fc-abdb-4ebe-8bba-6e55c9bccbda','637a531e-e5fa-41da-aa8a-c3457aec37a2','saiga','True',NULL);
