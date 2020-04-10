@@ -9,6 +9,7 @@ function getUserByUuid(uuid) {
 }
 
 function setUser(uuid, user) {
+    // change Name, Email and Homelocation for a given user
     return pool.query('UPDATE users SET Name=$1, Email=$2, HomeLocation=$3 WHERE UUID=$4;', [user.Name, user.Email, user.HomeLocation, uuid]);
 }
 
@@ -25,10 +26,12 @@ function getItems(lid) {
 }
 
 async function readableLists(uuid) {
+    // select lists for which the user ONLY has read permissions
     return pool.query("SELECT LID FROM Auth Where UUID=$1 and Permission&b'0100'='0100'", [uuid]);
 }
 
 async function authenticate(lid, uuid) {
+    // validate the permission for a given user in a list
     return pool.query('SELECT Permission FROM Auth WHERE LID=$1 AND UUID=$2;', [lid, uuid]).then((response) => response.rows);
 }
 
@@ -54,7 +57,7 @@ function getListByLid(lid) {
 
 
 function createList(lid, lname, rbg) {
-    // insert the new lists into Lists
+    // create a new list to be inserted into Lists
     const currentDate = new Date();
     // currentDate upon creation creates the current date
     // which can be used to determine its modification date
@@ -63,18 +66,17 @@ function createList(lid, lname, rbg) {
 
 function addPermission(uuid, lid, permission) {
     // insert the new list's user's permissions into Auth
-    // as this only occurs when the user is creating a list, they are the admin
-    // so they have full permissions
+    // as this only occurs when the user is creating a list
+    // user is the admin, so they have full permissions
     // eslint-disable-next-line no-bitwise
     const bStr = (permission >>> 0).toString(2);
     return pool.query('INSERT INTO Auth (UUID, LID, Permission) VALUES ($1, $2, $3) RETURNING *', [uuid, lid, bStr]);
 }
 
 function addItem(body) {
-    // insert the new list's user's permissions into Auth
-    // as this only occurs when the user is creating a list, they are the admin
-    // so they have full permissions
     const submit = body;
+    // initialize an item for a list with the
+    // creation date and incomplete status
     submit.Modified = new Date();
     submit.Completed = false;
     const parameters = [uuidv1(), submit.UUID, submit.LID,
@@ -83,6 +85,7 @@ function addItem(body) {
 }
 
 function setCompleted(iid, Completed) {
+    // item in list is checked off as 'completed'
     return pool.query('UPDATE Items Set Completed=$2 WHERE IID=$1', [iid, Completed]);
 }
 
@@ -96,18 +99,29 @@ function userInList(uuid, lid) {
 }
 
 function deleteUser(uuid, lid) {
-    // contact must be previously added to the list
     return pool.query('DELETE FROM Auth WHERE UUID = $1 AND LID = $2 RETURNING *;', [uuid, lid]);
 }
 
 function createLocation(lid, long, lat, name) {
-    // returns true if user has permissions for specified list
     return pool.query('INSERT INTO Locations (LID, Address, Name) VALUES ($1, POINT($2,$3), $4) RETURNING *;', [lid, long, lat, name]);
 }
 
 function deleteList(lid) {
     // contact must be previously added to the list
     return pool.query('DELETE FROM Lists WHERE LID = $1 RETURNING *;', [lid]);
+}
+
+async function inList(uuid) {
+    return pool.query('SELECT LID FROM Auth Where UUID=$1', [uuid]);
+}
+
+async function getListLocation(lid) {
+    return pool.query('SELECT Address FROM Locations Where LID=$1;', [lid]);
+}
+
+function updateAuth(permission, uuid, lid) {
+    // upate the current permission to the new one for a user in a list
+    return pool.query('UPDATE Auth SET Permission=$1 WHERE UUID=$2 AND LID=$3;', [permission, uuid, lid]);
 }
 
 module.exports = {
@@ -133,4 +147,7 @@ module.exports = {
     get_items: getItems,
     create_location: createLocation,
     delete_list: deleteList,
+    in_list: inList,
+    get_list_location: getListLocation,
+    update_auth: updateAuth,
 };

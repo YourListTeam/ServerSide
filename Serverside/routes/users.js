@@ -4,6 +4,7 @@ const router = express.Router();
 // const validator = require('validator');
 const dbclient = require('../model/database.js');
 
+/* GET users listing. */
 async function getHandler(body) {
     const output = {};
     if ('UUID' in body) {
@@ -20,10 +21,12 @@ async function getHandler(body) {
     return output;
 }
 
+/* PATCH users listing. */
 async function patchHandler(body) {
     const output = {};
     if ('UUID' in body) {
         const ret = await dbclient.get_user(body.UUID);
+        // get the user in the list and only change the required fields
         if (ret.rows) {
             const user = ret.rows[0];
             if ('name' in body) {
@@ -46,6 +49,7 @@ async function patchHandler(body) {
     return output;
 }
 
+/* POST a new user. */
 async function postHandler(body) {
     const output = {};
     if ('UUID' in body) {
@@ -67,7 +71,6 @@ async function postHandler(body) {
     return output;
 }
 
-/* GET users listing. */
 router.get('/', async (req, res) => {
     const output = await getHandler(req.body);
     if ('json' in output) {

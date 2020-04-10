@@ -7,8 +7,9 @@ const geocodingClient = mbxGeocoding({ accessToken: MAPBOX_ACCESS_TOKEN });
 
 const router = express.Router();
 
+/* GET location coordinates from MapBox. */
 async function getLocationHandler(body) {
-    // query to mapbox
+    // query address to mapbox
     const promise = geocodingClient.forwardGeocode({
         query: body.Address,
         countries: ['ca'],
@@ -28,7 +29,6 @@ async function postLocationHandler(body) {
     output.status = 400;
     if ('LID' in body && 'UUID' in body && 'Address' in body && 'Name' in body) {
         // check if user has writing permission
-
         const permission = await dbclient.authenticate_list(body.LID, body.UUID);
         if (dbclient.can_write(permission)) {
             // forward encode given address mapbox to get its coordinates
@@ -60,6 +60,78 @@ async function postLocationHandler(body) {
 router.post('/', async (req, res) => {
     const output = await postLocationHandler(req.body);
     res.status(output.status).end();
+});
+
+/* GET distance from the list to user. */
+async function calculateDistance(lid, body) {
+    const currdist = await dbclient.get_list_location(lid).then((match) => {
+        const output = {};
+        if (match.rows[0]) {
+            const R = 6371e3; // metres
+            // getting the coordinates from the address
+            const currLat = match.rows[0].address.x;
+            const currLong = match.rows[0].address.y;
+            // math to calculate distance
+            const φ1 = (currLat * Math.PI) / 180;
+            const φ2 = (body.Latitude * Math.PI) / 180;
+            const Δφ = ((body.Latitude - currLat) * Math.PI) / 180;
+            const Δλ = ((body.Longitude - currLong) * Math.PI) / 180;
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2)
+                    + Math.cos(φ1) * Math.cos(φ2)
+                    * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const d = R * c;
+            output.status = 200;
+            output.json = d; // distance in km
+            return output;
+        }
+        output.status = 404;
+        return output;
+    }).catch(() => null);
+
+    return currdist;
+}
+
+/* GET all locations that the user can interact with. */
+async function getAllLocations(body) {
+    const output = {};
+
+    if ('UUID' in body && 'Latitude' in body && 'Longitude' in body && 'Proximity' in body) {
+        // a user that has any permission for a list
+        // should be able to recieve notifications for that location
+        const perms = await dbclient.in_list(body.UUID);
+        const lists = [];
+        const locations = [];
+        // all of user's lists to iterate through
+        for (let i = 0; i < perms.rows.length; i += 1) {
+            lists.push(perms.rows[i].lid);
+        }
+        // calculate the distance for every list to the user
+        const distances = await Promise.all(lists.map((list) => calculateDistance(list, body)));
+        for (let i = 0; i < perms.rows.length; i += 1) {
+            if ('json' in distances[i]) {
+                // only if the distance is less or equal to the gven proximity
+                // then that lists is within the scope to receieve a notification for
+                if (distances[i].json <= body.Proximity) {
+                    locations.push(perms.rows[i].lid);
+                }
+            }
+        }
+        output.json = locations;
+        output.status = 200;
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/', async (req, res) => {
+    const output = await getAllLocations(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
+    }
 });
 
 module.exports = router;
