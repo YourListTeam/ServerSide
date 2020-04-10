@@ -110,6 +110,15 @@ function deleteList(lid) {
     return pool.query('DELETE FROM Lists WHERE LID = $1 RETURNING *;', [lid]);
 }
 
+async function inList(uuid) {
+    return pool.query('SELECT LID FROM Auth Where UUID=$1', [uuid]);
+}
+
+async function getListLocation(lid) {
+    return pool.query('SELECT Address FROM Locations Where LID=$1;', [lid]);
+}
+
+
 module.exports = {
     db_pool: pool,
     get_user: getUserByUuid,
@@ -133,4 +142,6 @@ module.exports = {
     get_items: getItems,
     create_location: createLocation,
     delete_list: deleteList,
+    in_list: inList,
+    get_list_location: getListLocation,
 };
