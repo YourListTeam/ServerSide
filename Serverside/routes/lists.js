@@ -1,7 +1,8 @@
 const express = require('express');
 const uuidGen = require('uuid');
-const dbclient = require('../model/database.js');
 const stc = require('string-to-color');
+
+const dbclient = require('../model/database.js');
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ async function postHandler(body) {
             await dbclient.create_new_list(lid, body.listname, body.Color);
             await dbclient.add_user(body.UUID, lid, 15);
             output.status = 200;
-            output.json = {lid: lid}
+            output.json = { lid };
         } else {
             output.status = 400;
         }
