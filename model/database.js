@@ -118,6 +118,9 @@ async function getListLocation(lid) {
     return pool.query('SELECT Address FROM Locations Where LID=$1;', [lid]);
 }
 
+function updateAuth(permission, uuid, lid) {
+    return pool.query('UPDATE Auth SET Permission=$1 WHERE UUID=$2 AND LID=$3;', [permission, uuid, lid]);
+}
 
 module.exports = {
     db_pool: pool,
@@ -144,4 +147,5 @@ module.exports = {
     delete_list: deleteList,
     in_list: inList,
     get_list_location: getListLocation,
+    update_auth: updateAuth,
 };

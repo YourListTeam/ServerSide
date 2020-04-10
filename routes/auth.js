@@ -102,4 +102,33 @@ router.delete('/user', async (req, res) => {
     res.status(output.status).end();
 });
 
+async function modifyauthHandler(body) {
+    const output = {};
+    if (('UUID' in body) && ('LID' in body) && ('OUUID' in body) && ('Permission' in body)) {
+        // only a user with admin permissions can add another user as admin
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.is_admin(userPermission)) {
+            // user must already be in the list
+            await dbclient.user_in_list(body.OUUID, body.LID);
+            // string must consist of only 1s and 0s
+            const intPerm = parseInt(body.Permission, 2);
+            if (body.Permission.match(/^[10]+$/)) {
+                if (intPerm > 0 && intPerm <= 15) {
+                    await dbclient.update_auth(body.Permission, body.OUUID,
+                        body.LID);
+                    output.status = 200;
+                    return output;
+                }
+            }
+        }
+    }
+    output.status = 400;
+    return output;
+}
+
+router.patch('/user', async (req, res) => {
+    const output = await modifyauthHandler(req.body);
+    res.status(output.status).end();
+});
+
 module.exports = router;
