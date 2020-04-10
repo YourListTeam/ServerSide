@@ -12,4 +12,5 @@ Repository for the serverside of the project
     export PGDATABASE='csc492_yourlist';
     export PGPORT=5432;
     export PORT=30000;
+    export mapbox="";
 5. node app.js
