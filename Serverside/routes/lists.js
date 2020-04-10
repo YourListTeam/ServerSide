@@ -62,6 +62,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+/* GET lists that are readable to the user. */
 async function getReadableHandler(body) {
     const output = {};
     if ('UUID' in body) {
@@ -88,7 +89,6 @@ router.get('/readable_lists', async (req, res) => {
 });
 
 /* DELETE a given list. */
-
 async function deleteListHandler(body) {
     const output = {};
     if ('LID' in body && 'UUID' in body) {
