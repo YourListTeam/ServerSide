@@ -1,6 +1,7 @@
 const express = require('express');
 const uuidGen = require('uuid');
 const dbclient = require('../model/database.js');
+const stc = require('string-to-color');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ async function getHandler(body) {
         const ret = await dbclient.get_list(body.LID);
         if (ret.rows) {
             output.status = 200;
+            ret.rows[0].hex = stc(ret.rows[0].colour);
             [output.json] = [ret.rows[0]];
         } else {
             output.status = 404;
@@ -33,23 +35,34 @@ router.get('/', async (req, res) => {
 /* POST list. */
 async function postHandler(body) {
     const output = {};
-    if ('UUID' in body && 'listname' in body && 'Color' in body) {
-        const lid = uuidGen.v4();
-        console.log(lid);
-        await dbclient.create_new_list(lid, body.listname, body.Colour);
-        await dbclient.add_user(body.UUID, lid, 15);
-        output.status = 200;
-    } else {
-        output.status = 400;
+    try {
+        if ('UUID' in body && body.UUID != null && 'listname' in body && 'Color' in body) {
+            console.log(body);
+            const lid = uuidGen.v4();
+            console.log(lid);
+            await dbclient.create_new_list(lid, body.listname, body.Color);
+            await dbclient.add_user(body.UUID, lid, 15);
+            output.status = 200;
+            output.json = {lid: lid}
+        } else {
+            output.status = 400;
+        }
+    } catch (e) {
+        output.status = 500;
     }
     return output;
 }
 
 router.post('/', async (req, res) => {
     const output = await postHandler(req.body);
-    res.status(output.status).end();
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
+    }
 });
 
+/* GET lists that are readable to the user. */
 async function getReadableHandler(body) {
     const output = {};
     if ('UUID' in body) {
@@ -73,6 +86,30 @@ router.get('/readable_lists', async (req, res) => {
     } else {
         res.status(output.status).end();
     }
+});
+
+/* DELETE a given list. */
+async function deleteListHandler(body) {
+    const output = {};
+    if ('LID' in body && 'UUID' in body) {
+        // user needs to have admin permissions to completely remove a list
+        // to remove a user from a list, see delete /user in user route
+        const userPermission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.is_admin(userPermission)) {
+            await dbclient.delete_list(body.LID);
+            output.status = 200;
+        } else {
+            output.status = 401;
+        }
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.delete('/', async (req, res) => {
+    const output = await deleteListHandler(req.body);
+    res.status(output.status).end();
 });
 
 module.exports = router;
