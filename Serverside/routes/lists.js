@@ -33,21 +33,31 @@ router.get('/', async (req, res) => {
 /* POST list. */
 async function postHandler(body) {
     const output = {};
-    if ('UUID' in body && 'listname' in body && 'Color' in body) {
-        const lid = uuidGen.v4();
-        console.log(lid);
-        await dbclient.create_new_list(lid, body.listname, body.Colour);
-        await dbclient.add_user(body.UUID, lid, 15);
-        output.status = 200;
-    } else {
-        output.status = 400;
+    try {
+        if ('UUID' in body && body.UUID != null && 'listname' in body && 'Color' in body) {
+            console.log(body);
+            const lid = uuidGen.v4();
+            console.log(lid);
+            await dbclient.create_new_list(lid, body.listname, body.Color);
+            await dbclient.add_user(body.UUID, lid, 15);
+            output.status = 200;
+            output.json = {lid: lid}
+        } else {
+            output.status = 400;
+        }
+    } catch (e) {
+        output.status = 500;
     }
     return output;
 }
 
 router.post('/', async (req, res) => {
     const output = await postHandler(req.body);
-    res.status(output.status).end();
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
+    }
 });
 
 async function getReadableHandler(body) {
