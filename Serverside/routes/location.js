@@ -155,7 +155,7 @@ async function getAllLocations(body) {
     return output;
 }
 
-router.get('/', async (req, res) => {
+router.get('/all', async (req, res) => {
     const output = await getAllLocations(req.body);
     if ('json' in output) {
         res.status(output.status).json(output.json);
