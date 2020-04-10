@@ -7,8 +7,9 @@ const geocodingClient = mbxGeocoding({ accessToken: MAPBOX_ACCESS_TOKEN });
 
 const router = express.Router();
 
+/* GET location coordinates from MapBox. */
 async function getLocationHandler(body) {
-    // query to mapbox
+    // query address to mapbox
     const promise = geocodingClient.forwardGeocode({
         query: body.Address,
         countries: ['ca'],
@@ -28,7 +29,6 @@ async function postLocationHandler(body) {
     output.status = 400;
     if ('LID' in body && 'UUID' in body && 'Address' in body && 'Name' in body) {
         // check if user has writing permission
-
         const permission = await dbclient.authenticate_list(body.LID, body.UUID);
         if (dbclient.can_write(permission)) {
             // forward encode given address mapbox to get its coordinates
@@ -62,6 +62,7 @@ router.post('/', async (req, res) => {
     res.status(output.status).end();
 });
 
+/* GET distance from the list to user. */
 async function calculateDistance(lid, body) {
     const currdist = await dbclient.get_list_location(lid).then((match) => {
         const output = {};
@@ -91,21 +92,26 @@ async function calculateDistance(lid, body) {
     return currdist;
 }
 
+/* GET all locations that the user can interact with. */
 async function getAllLocations(body) {
     const output = {};
 
-    if ('UUID' in body) {
+    if ('UUID' in body && 'Latitude' in body && 'Longitude' in body && 'Proximity' in body) {
         // a user that has any permission for a list
         // should be able to recieve notifications for that location
         const perms = await dbclient.in_list(body.UUID);
         const lists = [];
         const locations = [];
+        // all of user's lists to iterate through
         for (let i = 0; i < perms.rows.length; i += 1) {
             lists.push(perms.rows[i].lid);
         }
+        // calculate the distance for every list to the user
         const distances = await Promise.all(lists.map((list) => calculateDistance(list, body)));
         for (let i = 0; i < perms.rows.length; i += 1) {
             if ('json' in distances[i]) {
+                // only if the distance is less or equal to the gven proximity
+                // then that lists is within the scope to receieve a notification for
                 if (distances[i].json <= body.Proximity) {
                     locations.push(perms.rows[i].lid);
                 }
