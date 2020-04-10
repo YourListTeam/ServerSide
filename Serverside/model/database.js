@@ -55,6 +55,9 @@ function getListByLid(lid) {
     return pool.query('SELECT * FROM Lists WHERE LID=$1;', [lid]);
 }
 
+function getListLocByLid(lid) {
+    return pool.query('SELECT * FROM lists LEFT OUTER JOIN locations ON lists.LID=locations.LID WHERE LID=$1', [lid]);
+}
 
 function createList(lid, lname, rbg) {
     // create a new list to be inserted into Lists
@@ -144,7 +147,7 @@ module.exports = {
     check_completed: checkCompleted,
     set_completed: setCompleted,
     readable_lists: readableLists,
-    get_list: getListByLid,
+    get_list: getListLocByLid,
     create_new_list: createList,
     delete_contact: deleteUser,
     user_in_list: userInList,

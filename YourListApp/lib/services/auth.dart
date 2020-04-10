@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+/// Main service which talk to Firebase authentication
+/// functionality includes getting user, senging requests to log in
+/// or to register and also signing out out of the device
 class AuthService {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -47,7 +50,7 @@ class AuthService {
     return currentUser != null;
   }
 
-  Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).email;
+  Future<FirebaseUser> getUser() async {
+    return await _firebaseAuth.currentUser();
   }
 }

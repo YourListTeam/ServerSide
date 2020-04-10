@@ -6,6 +6,7 @@ part of 'userService.dart';
 // ChopperGenerator
 // **************************************************************************
 
+// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
 class _$UserService extends UserService {
   _$UserService([ChopperClient client]) {
     if (client == null) return;
@@ -16,14 +17,14 @@ class _$UserService extends UserService {
   final definitionType = UserService;
 
   @override
-  Future<Response> getUsers() {
+  Future<Response<dynamic>> getUsers() {
     final $url = '/users';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
-  Future<Response> getUser(Map body) {
+  Future<Response<dynamic>> getUser(Map<dynamic, dynamic> body) {
     final $url = '/users';
     final $body = body;
     final $request = Request('GET', $url, client.baseUrl, body: $body);
@@ -31,7 +32,7 @@ class _$UserService extends UserService {
   }
 
   @override
-  Future<Response> postUser(Map<String, dynamic> body) {
+  Future<Response<dynamic>> postUser(Map<dynamic, dynamic> body) {
     final $url = '/users';
     final $body = body;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
