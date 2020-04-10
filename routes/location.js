@@ -62,4 +62,70 @@ router.post('/', async (req, res) => {
     res.status(output.status).end();
 });
 
+async function calculateDistance(lid, body) {
+    const currdist = await dbclient.get_list_location(lid).then((match) => {
+        const output = {};
+        if (match.rows[0]) {
+            const R = 6371e3; // metres
+            // getting the coordinates from the address
+            const currLat = match.rows[0].address.x;
+            const currLong = match.rows[0].address.y;
+            // math to calculate distance
+            const φ1 = (currLat * Math.PI) / 180;
+            const φ2 = (body.Latitude * Math.PI) / 180;
+            const Δφ = ((body.Latitude - currLat) * Math.PI) / 180;
+            const Δλ = ((body.Longitude - currLong) * Math.PI) / 180;
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2)
+                    + Math.cos(φ1) * Math.cos(φ2)
+                    * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const d = R * c;
+            output.status = 200;
+            output.json = d; // distance in km
+            return output;
+        }
+        output.status = 404;
+        return output;
+    }).catch(() => null);
+
+    return currdist;
+}
+
+async function getAllLocations(body) {
+    const output = {};
+
+    if ('UUID' in body) {
+        // a user that has any permission for a list
+        // should be able to recieve notifications for that location
+        const perms = await dbclient.in_list(body.UUID);
+        const lists = [];
+        const locations = [];
+        for (let i = 0; i < perms.rows.length; i += 1) {
+            lists.push(perms.rows[i].lid);
+        }
+        const distances = await Promise.all(lists.map((list) => calculateDistance(list, body)));
+        for (let i = 0; i < perms.rows.length; i += 1) {
+            if ('json' in distances[i]) {
+                if (distances[i].json <= body.Proximity) {
+                    locations.push(perms.rows[i].lid);
+                }
+            }
+        }
+        output.json = locations;
+        output.status = 200;
+    } else {
+        output.status = 400;
+    }
+    return output;
+}
+
+router.get('/', async (req, res) => {
+    const output = await getAllLocations(req.body);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
+    }
+});
+
 module.exports = router;
