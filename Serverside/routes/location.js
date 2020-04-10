@@ -40,7 +40,7 @@ async function postLocationHandler(body) {
 
                     // add location to the table
                     return creationpromise = dbclient.create_location(body.LID, lat,
-                        long, body.Name).then(() => {
+                        long, body.Name, body.Address).then(() => {
                         output.status = 200;
                         return output;
                     }).catch(() => {
@@ -60,6 +60,42 @@ async function postLocationHandler(body) {
 router.post('/', async (req, res) => {
     const output = await postLocationHandler(req.body);
     res.status(output.status).end();
+});
+
+
+async function getListLocationHandler(body) {
+    const output = {};
+    output.status = 400;
+    if ('LID' in body && 'UUID' in body) {
+        // check if user has read permission
+
+        const permission = await dbclient.authenticate_list(body.LID, body.UUID);
+        if (dbclient.can_read(permission)) {
+            // forward encode given address mapbox to get its coordinates
+            try {
+                res = await dbclient.get_location(body.LID);
+                if (res.rows.length) {
+                    output.json = res.rows[0];
+                    output.status = 200;
+                } else {
+                    output.status = 404;
+                }
+            } catch (e) {
+                output.status = 500;
+            }
+        }
+    }
+    return Promise.resolve(output);
+}
+
+router.get('/', async (req, res) => {
+    const output = await getListLocationHandler(req.body);
+    console.log(output);
+    if ('json' in output) {
+        res.status(output.status).json(output.json);
+    } else {
+        res.status(output.status).end();
+    }
 });
 
 module.exports = router;

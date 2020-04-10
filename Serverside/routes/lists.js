@@ -1,6 +1,7 @@
 const express = require('express');
 const uuidGen = require('uuid');
 const dbclient = require('../model/database.js');
+const stc = require('string-to-color');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ async function getHandler(body) {
         const ret = await dbclient.get_list(body.LID);
         if (ret.rows) {
             output.status = 200;
+            ret.rows[0].hex = stc(ret.rows[0].colour);
             [output.json] = [ret.rows[0]];
         } else {
             output.status = 404;
