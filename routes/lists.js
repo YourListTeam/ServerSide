@@ -34,10 +34,11 @@ router.get('/', async (req, res) => {
 async function postHandler(body) {
     const output = {};
     if ('UUID' in body && 'listname' in body && 'Color' in body) {
-        const lid = uuidGen.v4();
+        const lid = uuidGen.v4(); // creates a unique lid for the list
         console.log(lid);
         await dbclient.create_new_list(lid, body.listname, body.Colour);
         await dbclient.add_user(body.UUID, lid, 15);
+        // user who created the list, must start as an admin
         output.status = 200;
     } else {
         output.status = 400;
@@ -50,6 +51,7 @@ router.post('/', async (req, res) => {
     res.status(output.status).end();
 });
 
+/* GET lists that are readable to the user. */
 async function getReadableHandler(body) {
     const output = {};
     if ('UUID' in body) {
@@ -76,7 +78,6 @@ router.get('/readable_lists', async (req, res) => {
 });
 
 /* DELETE a given list. */
-
 async function deleteListHandler(body) {
     const output = {};
     if ('LID' in body && 'UUID' in body) {
