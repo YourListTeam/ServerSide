@@ -4,11 +4,11 @@ YourList is an Android and iOS application which primarily allows you to create 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Setup
 
-In order to setup the backend, please see the [Backend README.md](Serverside/README.md) and [Frontend README.md](YourListApp/README.md) files.
+In order to setup the back-end, please see the [back-end README.md](Serverside/README.md) and for the front-end please see the [front-end README.md](YourListApp/README.md) files.
 
 ## Authors
 
