@@ -56,7 +56,7 @@ function getListByLid(lid) {
 }
 
 function getListLocByLid(lid) {
-    return pool.query('SELECT lists.LID, lists.listname, lists.Colour, lists.modified, locations.Address, locations.AddressName, locations.Name FROM lists LEFT OUTER JOIN locations ON lists.LID=locations.LID WHERE LID=$1', [lid]);
+    return pool.query('SELECT lists.LID, lists.listname, lists.Colour, lists.modified, locations.Address, locations.AddressName, locations.Name FROM lists LEFT OUTER JOIN locations ON lists.LID=locations.LID WHERE lists.LID=$1', [lid]);
 }
 
 function createList(lid, lname, rbg) {
