@@ -1,6 +1,6 @@
-# Project Title
+# YourList
 
-YourList is an Android and iOS application which primarily allows you to create a shared shopping list that can be easily distributed among your family or roommates. Another major component of the application involves the ability to notify users of the surrounding locations for shops related to their list. If the application finds a shop mentioned in the list, it will notify the user that one of the active listed shops is nearby.
+YourList is an Android and iOS application that primarily allows you to create a shared shopping list that can be easily distributed among your family or roommates. Another major component of the application involves the ability to notify users of the surrounding locations for shops related to their list. If the application finds a shop mentioned in the list, it will notify the user that one of the active listed shops is nearby.
 
 ## Getting Started
 
@@ -25,4 +25,4 @@ See also the list of [contributors](https://github.com/your/project/contributors
 ## Acknowledgments
 
 * Thank you to Sadia Sharmin and Ilir Dema for your support in making this project possible!
-* Thank you Andrew Wang for all of your help in setting up the infrastructure for this project!
+* Thank you, Andrew Wang, for all of your help in setting up the infrastructure for this project!
