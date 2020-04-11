@@ -20,7 +20,7 @@ In order to setup the back-end, please see the [back-end README.md](Serverside/R
 
 * **JP Moreno** - *Developer* - [jp-moreno](https://github.com/jp-moreno)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/UTMCSC301/project-yourlist/graphs/contributors) who participated in this project.
 
 ## Acknowledgments
 
