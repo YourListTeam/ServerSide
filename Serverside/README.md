@@ -1,6 +1,6 @@
-# Project Title
+# YourList - Backend
 
-This folder is the backend part of the YourList application! This contains most of the backend logic for working with lists, items and other users. This is a RESTful backend, with authentication based handlded by Firebase on the client side.  
+This folder is the backend part of the YourList application! This contains most of the backend logic for working with lists, items and other users. This is a RESTful backend, with authentication based handled by Firebase on the client-side.  
 
 ## Getting Started
 
@@ -17,7 +17,7 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
 
 - ##### Node installation on Ubuntu
 
-  You can install nodejs and npm easily with apt install, just run the following commands.
+  You can install node.js and npm easily with apt install, just run the following commands.
 
       $ sudo apt install nodejs
       $ sudo apt install npm
@@ -42,7 +42,7 @@ $ npm install npm -g
 
 A step by step series of examples that tell you how to get a development env running
 
-We are going to start off my cloning the repository, then installing all of our dependencies
+We are going to start by cloning the repository, then installing all of our dependencies
 ```
 $ git clone https://github.com/UTMCSC301/project-yourlist.git
 $ cd Serverside
@@ -61,11 +61,11 @@ export UTORID=;
 export mapbox=;
 ```
 
-We are currently using PostgreSQL 9.5.21, although later versions should work as well. You can create a MapBox authentication token on the offical [Mapbox Site](https://account.mapbox.com/). The UTORID variable is optional since it used by our setup script to create an SSH tunnel. You can then run `npm start` to start the application. If done correctly, you should see the following messsage be printed onto your terminal `App listening on port 3000`.
+We are currently using PostgreSQL 9.5.21, although later versions should work as well. You can create a MapBox authentication token on the official [Mapbox Site](https://account.mapbox.com/). The UTORID variable is optional since it used by our setup script to create an SSH tunnel. You can then run `npm start` to start the application. If done correctly, you should see the following message be printed onto your terminal `App listening on port 3000`.
 
 ### And coding style tests
 
-We utilize a slightly modifed version of the airbnb-base eslint configuration. This can be run by using the following commands. 
+We utilize a slightly modified version of the airbnb-base eslint configuration. This can be run by using the following commands. 
 
 ```
 $ npx eslint --fix .
@@ -73,7 +73,7 @@ $ npx eslint --fix .
 
 ## Deployment
 
-We currently host our application on a University of Toronto Mississauga server, for this purpose we have created the deployment script, which can be run via the `deploy.sh` script. However, this also requires a slightly modified environment file. It is reccomended for deployment to expand on the `deploy.sh` file. 
+We currently host our application on a University of Toronto Mississauga server, for this purpose we have created the deployment script, which can be run via the `deploy.sh` script. However, this also requires a slightly modified environment file. It is recommended for deployment to expand on the `deploy.sh` file. 
 
 ### Database
 
@@ -87,7 +87,7 @@ psql -f model/sql_scripts/Lists.sql
 psql -f model/sql_scripts/Items.sql
 ```
 
-It is reccomended to use a tool like DataGrip which allows for automatic transactions and runs these scripts in bulk. 
+It is recommended to use a tool like DataGrip which allows for automatic transactions and runs these scripts in bulk. 
 
 ## Built With
 
@@ -119,4 +119,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Thank you to Sadia Sharmin and Ilir Dema for your support in making this project possible!
-* Thank you Andrew Wang for all of your help in setting up the infrastructure for this project!
+* Thank you, Andrew Wang, for all of your help in setting up the infrastructure for this project!
