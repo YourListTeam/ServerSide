@@ -104,9 +104,9 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * **Krish Chowdhary** - *Mentor and PM* - [krishchow](https://github.com/krishchow)
 
-* **Arthur Azarskyy** - *Front-End Lead* - [anshu-p](https://github.com/anshu-p)
+* **Arthur Azarskyy** - *Front-End Lead* - [ArturAzarskyy](https://github.com/ArturAzarskyy)
 
-* **Anshu Pandey** - *Back-End Lead* - [ArturAzarskyy](https://github.com/ArturAzarskyy)
+* **Anshu Pandeya** - *Back-End Lead* - [anshu-p](https://github.com/anshu-p)
 
 * **JP Moreno** - *Developer* - [jp-moreno](https://github.com/jp-moreno)
 
